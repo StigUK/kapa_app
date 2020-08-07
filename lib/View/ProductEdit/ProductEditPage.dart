@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_picker/flutter_picker.dart';
 import 'package:kapa_app/Data/PickersData.dart';
+import 'package:kapa_app/Models/ad.dart';
+import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
+import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/ProductEdit/ProductImages.dart';
 import 'package:kapa_app/View/ProductEdit/ProductSizes.dart';
-import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -26,7 +28,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: appThemeBackgroundHexColor,
-      //appBar: customAppBar(),
       appBar: AppBar(
         backgroundColor: appThemeBackgroundHexColor,
         actions: <Widget>[
@@ -113,7 +114,23 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 ),
               ),
               FlatButton(
-                onPressed: (){/*showPickerArray(context);*/},
+                onPressed: (){
+                  FirestoreService fs = FirestoreService();
+                  Boot bt = Boot(
+                    width: 10,
+                    height: 10,
+                    size: 11,
+                    sizeType: 1,
+                    price: 10,
+                    material: 1,
+                    description: 'Піздаті кроси',
+                    modelName: 'Найки хуяйки',
+                  );
+                  Ad _ad = Ad();
+                  _ad.boot = bt;
+                  _ad.userId = '1';
+                  fs.addNewAdd(_ad);
+                },
                 child: Text('text'),
               )
             ],
@@ -121,6 +138,34 @@ class _ProductEditPageState extends State<ProductEditPage> {
         ),
       ),
     );
+  }
+
+  Widget showErrorText(String error)
+  {
+    return Container(
+    );
+  }
+
+  setSizesArray(int sizeType)
+  {
+    switch(sizeType)
+    {
+      case 0: {
+        return EUSizes;
+        break;
+      }
+      case 1: {
+        return EUSizes;
+        break;
+      }
+      case 2: {
+        return EUSizes;
+        break;
+      }
+      default: {
+        return EUSizes;
+      }
+    }
   }
 
   /*showPickerArray(BuildContext context) {
