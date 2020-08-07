@@ -90,67 +90,68 @@ class _LoginScreenState extends State<LoginScreen> {
       key: _key,
       autovalidate: _validate,
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                style: TextStyle(color: Colors.white, decorationColor: Colors.white),
-                controller: phoneTEC,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Номер телефону',
-                    labelStyle: TextStyle(
-                        color: Colors.white)
-                ),
-                validator: (String value)
-                {
-                  return validateMobile(value);
-                },
-                onSaved: (String val)
-                {
-
-                },
-                keyboardType: TextInputType.phone,
+        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              style: TextStyle(color: Colors.white, decorationColor: Colors.white),
+              controller: phoneTEC,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Номер телефону',
+                  labelStyle: TextStyle(
+                      color: Colors.white)
               ),
-              codeSend ? TextFormField(
-                style: TextStyle(color: Colors.white, decorationColor: Colors.white),
-                controller: codeTEC,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Код підтвердження',
-                    labelStyle: TextStyle(
-                        color: Colors.white)
-                ),
-                validator: (String value)
-                {
-                  return validateTextArea(codeTEC.text);
-                },
-                onSaved: (String val)
-                {
+              validator: (String value)
+              {
+                return validateMobile(value);
+              },
+              onSaved: (String val)
+              {
 
-                },
-                keyboardType: TextInputType.phone,
-              ) : Container(),
-              Padding(
-                padding: EdgeInsets.only(top: 30),
-                child: SizedBox(
-                  height: 50.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: RaisedButton(onPressed: (){
-                    codeSend ? () {
-                      AuthService().signInWithOTP(codeTEC.text, verificationID);
+              },
+              keyboardType: TextInputType.phone,
+            ),
+            codeSend ? TextFormField(
+              style: TextStyle(color: Colors.white, decorationColor: Colors.white),
+              controller: codeTEC,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Код підтвердження',
+                  labelStyle: TextStyle(
+                      color: Colors.white)
+              ),
+              validator: (String value)
+              {
+                return validateTextArea(codeTEC.text);
+              },
+              onSaved: (String val)
+              {
+
+              },
+              keyboardType: TextInputType.phone,
+            ) : Container(),
+            Padding(
+              padding: EdgeInsets.only(top: 30),
+              child: SizedBox(
+                height: 50.0,
+                width: MediaQuery.of(context).size.width,
+                child: RaisedButton(onPressed: (){
+                  // ignore: unnecessary_statements
+                  codeSend ? () {
+                    AuthService().signInWithOTP(codeTEC.text, verificationID);
                     setState(() {
                       codeSend = true;
                     });
-                    }  : sendSMScode();
-                  },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: Text('Верифікувати', style: TextStyle(color: Colors.white),),
-                    padding: EdgeInsets.all(8.0),
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  }  : sendSMScode();
+                },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  child: Text('Верифікувати', style: TextStyle(color: Colors.white),),
+                  padding: EdgeInsets.all(8.0),
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -185,6 +186,4 @@ class _LoginScreenState extends State<LoginScreen> {
         _validate = true;
       });
   }
-
-
 }

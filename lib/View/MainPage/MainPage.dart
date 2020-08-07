@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kapa_app/Core/hexColor.dart';
 import 'package:kapa_app/Models/User.dart';
+import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 
 class MainPage extends StatefulWidget {
+  final FirebaseUser firebaseUser;
+  MainPage({this.firebaseUser});
   @override
   State<StatefulWidget> createState() {
-    return new MainPageState();
+    return new MainPageState(firebaseUser: firebaseUser);
   }
 }
 
 class MainPageState extends State<MainPage> {
-
   final FirebaseUser firebaseUser;
-
-  AuthService authService = AuthService();
-
   MainPageState({this.firebaseUser});
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return Scaffold(
       appBar: customAppBar(),
-      backgroundColor: HexColor("#232326"),
+      backgroundColor: appThemeBackgroundHexColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(),
         sized: false,
