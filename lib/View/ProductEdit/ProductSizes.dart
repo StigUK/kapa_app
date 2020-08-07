@@ -79,9 +79,7 @@ class _ProductSizesState extends State<ProductSizes> {
                                   right: BorderSide(color: appThemeAdditionalSecondHexColor)
                               )
                           ),
-                          child:  Expanded(
-                                child: Text("Довжина / см", style: defaultTextStyle,),
-                              ),
+                          child: Text("Довжина / см", style: defaultTextStyle),
                         ),
                       ),
                       Container(
@@ -89,6 +87,7 @@ class _ProductSizesState extends State<ProductSizes> {
                         width: 70,
                         child: Text("38", style: defaultTextStyle,),
                       ),
+
                     ],
                   ),
 
@@ -107,9 +106,7 @@ class _ProductSizesState extends State<ProductSizes> {
                                   right: BorderSide(color: appThemeAdditionalSecondHexColor)
                               )
                           ),
-                          child:                               Expanded(
-                            child: Text("Ширина / см", style: defaultTextStyle,),
-                          ),
+                          child: Text("Ширина / см", style: defaultTextStyle),
                         ),
                       ),
                       Container(
