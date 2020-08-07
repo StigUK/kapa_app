@@ -11,6 +11,8 @@ class Main extends StatelessWidget {
   //AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
+    AuthService authService = AuthService();
+    authService.context = context;
     return MaterialApp(
       title: 'Kapa',
       debugShowCheckedModeBanner: false,
@@ -25,7 +27,7 @@ class Main extends StatelessWidget {
             ),
           ),
       ),
-      home: AuthService().handleAuth(),
+      home: authService.handleAuth(),
       //home: LoginScreen(),
       /*localizationsDelegates: [
         AppLoc.delegate
