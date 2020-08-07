@@ -18,5 +18,4 @@ final decorationForContainerWithBorder_bottom = BoxDecoration(
   ),
 );
 const decorationForContainerWithBorder_left = BoxDecoration(
-
 );

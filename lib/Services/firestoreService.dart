@@ -12,11 +12,7 @@ class FirestoreService
 
   addNewAdd(Ad _ad)
   async {
-   await _db.collection('ads').add(
-       {
-         'ad': '45'
-       }
-   );
+   await _db.collection('ads').add(_ad.toMap());
   }
 
   editAdd()

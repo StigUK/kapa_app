@@ -6,4 +6,12 @@ class Ad
   List<String> images;
   String userId;
   Boot boot;
+
+  Map<String, dynamic> toMap() {
+    return {
+      "images": images,
+      "userId": userId,
+      "boot": boot.toMap(),
+    };
+  }
 }
