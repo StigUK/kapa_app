@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "576468200016-3mirau0etjklbcsstheeht5tvo7vripv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prusb.kapa_app",
+            "certificate_hash": "36e3e7b653c19b347b9ecdeec2d4e3f4529c7e21"
+          }
+        },
+        {
           "client_id": "576468200016-mkosj96ctfotninimq6u5oeruriurhua.apps.googleusercontent.com",
           "client_type": 3
         }

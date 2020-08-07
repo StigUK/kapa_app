@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kapa_app/Core/hexColor.dart';
+import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
@@ -14,7 +16,11 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
 
-  //AuthService authService = AuthService();
+  final FirebaseUser firebaseUser;
+
+  AuthService authService = AuthService();
+
+  MainPageState({this.firebaseUser});
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
@@ -43,7 +49,7 @@ class MainPageState extends State<MainPage> {
                         Icons.filter_list,
                         color: Colors.white,
                       ),
-                      onPressed: () { /*authService.signOut();*/ },
+                      onPressed: () { authService.signOut(); },
                     ),
                     Expanded(child: Container(),),
                   ],
@@ -108,7 +114,8 @@ class MainPageState extends State<MainPage> {
             children: <Widget>[
               IconButton(icon: Icon(Icons.border_all, color: Colors.blue,), onPressed: () {},),
               IconButton(icon: Icon(Icons.filter_drama, color: Colors.blue,), onPressed: () {},),
-              IconButton(icon: Icon(Icons.favorite, color: Colors.blue,), onPressed: () {},),
+              IconButton(icon: Icon(Icons.favorite, color: Colors.blue,), onPressed: () {
+              },),
               IconButton(icon: Icon(Icons.settings, color: Colors.blue,), onPressed: () {},),
             ],
           ),

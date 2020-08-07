@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService
 {
@@ -32,7 +33,7 @@ class AuthService
   handleAuth()
   {
     return StreamBuilder(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
+      stream: _auth.onAuthStateChanged,
       builder: (context, snapshot)
       {
         if(snapshot.hasData){
@@ -48,12 +49,16 @@ class AuthService
 
   signOut()
   {
-    FirebaseAuth.instance.signOut();
+    _auth.signOut();
   }
 
   signInWithCredential(AuthCredential authCredential)
   {
-    FirebaseAuth.instance.signInWithCredential(authCredential);
+    _auth.signInWithCredential(authCredential).then((AuthResult result){
+      print(result.user);
+    }).catchError((e){
+      print(e);
+    });
   }
 
   signInWithOTP(smsCode, verID)
@@ -84,9 +89,9 @@ class AuthService
     {
       this.verificationID = verId;
     };
-    await FirebaseAuth.instance.verifyPhoneNumber(
+    _auth.verifyPhoneNumber(
         phoneNumber: number,
-        timeout: const Duration(seconds: 5),
+        timeout: const Duration(seconds: 60),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
         codeSent: smsSent,
