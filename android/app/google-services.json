@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "576468200016",
+    "firebase_url": "https://kapa-d04ea.firebaseio.com",
+    "project_id": "kapa-d04ea",
+    "storage_bucket": "kapa-d04ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576468200016:android:b5d689d450e277bf697f55",
+        "android_client_info": {
+          "package_name": "com.prusb.kapa_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576468200016-mkosj96ctfotninimq6u5oeruriurhua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCAM1WvKsfwUELpa-xG1LjJcKCBmU2IIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576468200016-mkosj96ctfotninimq6u5oeruriurhua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
