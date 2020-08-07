@@ -1,9 +1,10 @@
 import 'dart:ffi';
-
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:kapa_app/Models/User.dart';
+import 'package:kapa_app/Services/customWebView.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +13,9 @@ class AuthService
 {
   String verificationID;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String fb_your_client_id = "312374703243246";
+  String fb_your_redirect_url = "https://kapa-d04ea.firebaseapp.com/__/auth/handler";
+  BuildContext context;
 
   User _userFromFirebaseUser(FirebaseUser user)
   {
@@ -97,6 +101,28 @@ class AuthService
         codeSent: smsSent,
         codeAutoRetrievalTimeout: autoRetrievalTimeout
     );
+  }
+
+  loginWithFacebook() async{
+    String result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CustomWebView(
+            selectedUrl:
+            'https://www.facebook.com/dialog/oauth?client_id=$fb_your_client_id&redirect_uri=$fb_your_redirect_url&response_type=token&scope=email,public_profile,',
+          ),
+          maintainState: true),
+    );
+    if (result != null) {
+      try {
+            final facebookAuthCred = FacebookAuthProvider.getCredential(accessToken: result);
+            signInWithCredential(facebookAuthCred);
+          }
+          catch(e)
+          {
+
+          }
+    }
   }
 
   /*Future<void> signUpWithFacebook() async{

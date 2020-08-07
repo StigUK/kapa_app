@@ -164,7 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   pressLoginWithFacebook()
   {
-    //authService.signUpWithFacebook();
+    authService.context = context;
+    authService.loginWithFacebook();
   }
 
   pressLoginWithPhone() //If user choice phone login method
