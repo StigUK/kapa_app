@@ -1,15 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kapa_app/Data/PickersData.dart';
 import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
-import 'package:kapa_app/View/ProductEdit/ProductImages.dart';
+import 'package:kapa_app/View/ProductEdit/ImageWidget.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -33,7 +37,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
   double bootPrice=0;
   String bootMaterial="Шкіра";
 
+  List<String> images;
+  FirebaseStorage _storage = FirebaseStorage.instance;
   var descriptionTEC;
+  var sizeOfContainer;
+  File _image;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +53,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
         backgroundColor: appThemeBackgroundHexColor,
         actions: <Widget>[
           FlatButton(
-            onPressed: (){},
+            onPressed: (){
+              
+            },
             child: Text("Зберегти",style: TextStyle(color: Colors.blue),),
           )
         ],
@@ -57,7 +67,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
             children: <Widget>[
               //Зображення
               TextWithDot("Додати фото"),
-              ProductImagesUpdate(),
+              ProductImages(),
               //Розміри
               TextWithDot("Розміри"),
               bootSizes(),
@@ -140,6 +150,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     maxLines: 1,
                   )
               ),
+              FloatingActionButton(
+                onPressed: (){
+                  //uploadPic();
+                },
+                tooltip: 'Pick Image',
+                child: Icon(Icons.add_a_photo),
+              ),
               FlatButton(
                 onPressed: (){
                   FirestoreService fs = FirestoreService();
@@ -164,12 +181,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget showErrorText(String error)
-  {
-    return Container(
     );
   }
 
@@ -206,7 +217,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(left: 40, right: 40),
-            child: Image.asset('assets/images/ProductEditPage/sneaker.png', height: (size.width-20)/2,),
+            child: Image.asset('assets/images/ProductEditPage/sneaker.png', height: (size.width-20)/2.2),
           ),
           Expanded(
             child: Column(
@@ -344,6 +355,111 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
+  Widget ProductImages()
+  {
+    int imLength = 3;
+    //imLength==null ? imLength = 0 : imLength = images.length;
+    print(imLength);
+    sizeOfContainer = (size.width-50)/4;
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: appThemeAdditionalHexColor,
+      ),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                  onTap: (){},
+                  child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
+              ),
+              imLength<1 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
+                  )
+              ),
+              imLength<2 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
+                  )
+              ),
+              imLength<3 ? Container() : GestureDetector(
+                  onTap: (){
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      height: sizeOfContainer,
+                      width: sizeOfContainer,
+                    ),
+                  )
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              imLength<4 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      height: sizeOfContainer,
+                      width: sizeOfContainer,
+                    ),
+                  )
+              ),
+              imLength<5 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      height: sizeOfContainer,
+                      width: sizeOfContainer,
+                    ),
+                  )
+              ),
+              imLength<6 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      height: sizeOfContainer,
+                      width: sizeOfContainer,
+                    ),
+                  )
+              ),
+              imLength<7 ? Container() : GestureDetector(
+                  onTap: (){},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      'https://picsum.photos/200',
+                      height: sizeOfContainer,
+                      width: sizeOfContainer,
+                    ),
+                  )
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   sizePicker(BuildContext context)
   {
       Picker(
@@ -388,5 +504,28 @@ class _ProductEditPageState extends State<ProductEditPage> {
           });
         }
     ).showDialog(context);
+  }
+
+  Widget showErrorText(String error)
+  {
+    return Container(
+    );
+  }
+
+  Future<String> uploadPic(File image) async {
+    try {
+      image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    } on PlatformException catch (e) {
+      return null;
+    }
+    StorageReference reference =
+    _storage.ref().child(image.path.split('/').last);
+    print("776tyugjhj"+image.path);
+    String filePath = 'images/${DateTime.now()}.png';
+    StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
+    /*StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    // Waits till the file is uploaded then stores the download url
+    String url = await taskSnapshot.ref.getDownloadURL();*/
+    //print(url);
   }
 }
