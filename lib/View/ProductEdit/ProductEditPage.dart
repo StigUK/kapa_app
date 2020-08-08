@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-//import 'package:flutter_picker/flutter_picker.dart';
 import 'package:kapa_app/Data/PickersData.dart';
 import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Models/boot.dart';
@@ -28,21 +27,17 @@ class _ProductEditPageState extends State<ProductEditPage> {
   double bootHeight=0;
   double bootSize=33.5;
   int bootSizeType=0;
-  String bootDescription="";
-  String bootModelName="";
+  String bootDescription="Some description";
+  String bootModelName="Other";
+  String bootModelName2="sdas";
   double bootPrice=0;
-  int bootMaterial=0;
+  String bootMaterial="Шкіра";
 
-  var bootHeightTEC = TextEditingController();
-  var bootWidthTEC = TextEditingController();
+  var descriptionTEC;
 
   @override
   Widget build(BuildContext context) {
-
-    //bootHeightTEC.value = bootHeight.toString() as TextEditingValue;
-    //bootHeightTEC = TextEditingController(text: bootHeight.toString());
-    //bootWidthTEC = TextEditingController(text: bootWidth.toString());
-
+    descriptionTEC = TextEditingController(text: bootDescription);
     size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: appThemeBackgroundHexColor,
@@ -72,9 +67,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 width: size.width-20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Nike 2100", style: defaultTextStyle,),
+                child: InkWell(
+                  onTap: ()
+                  {
+                    universalPicker(1,ModelsNames);
+                  },
+                  child:  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(bootModelName, style: defaultTextStyle, textAlign: TextAlign.start),
+                  ),
                 ),
               ),
               //Матераіал
@@ -83,9 +84,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 width: size.width-20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Nike 2100", style: defaultTextStyle,),
+                child: InkWell(
+                  onTap: () {
+                    universalPicker(2,BootMaterial);
+                    },
+                  child:  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(bootMaterial, style: defaultTextStyle, textAlign: TextAlign.start),
+                  ),
                 ),
               ),
               //Опис
@@ -96,7 +102,18 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 decoration: decorationForContainerWithBorder_bottom,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Nike 2100", style: defaultTextStyle,),
+                  child: TextField(
+                    controller: descriptionTEC,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                      ),
+                    ),
+                    onChanged: (value){
+                      bootDescription = value;
+                    },
+                    maxLength: 300,
+                    maxLines: 5,
+                  ),
                 ),
               ),
               //Ціна
@@ -105,10 +122,23 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 width: size.width-20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Nike 2100", style: defaultTextStyle,),
-                ),
+                child: TextField(
+                    //controller: priceTEC,
+                    onChanged: (value){
+                      if(value!="")
+                      bootPrice = double.parse(value);
+                      else bootPrice = 0.0;
+                    },
+                    keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    style: defaultTextStyle,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      counterText: "",
+                      hintText: bootPrice.toString(),
+                    ),
+                    maxLines: 1,
+                  )
               ),
               FlatButton(
                 onPressed: (){
@@ -119,9 +149,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     size: 11,
                     sizeType: 1,
                     price: 10,
-                    material: 1,
+                    material: "Матеріал",
                     description: 'Піздаті кроси',
-                    modelName: 'Найки хуяйки',
+                    modelName: "Nike",
                   );
                   Ad _ad = Ad();
                   _ad.boot = bt;
@@ -213,11 +243,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 10),
                         width: 70,
                         child: FlatButton(
                           onPressed: (){
-                            sizeTypePicker();
+                            universalPicker(0, SizeTypeFull);
                           },
                           child: Text(SizeType[bootSizeType], style: defaultTextStyle),
                         ),
@@ -331,17 +360,31 @@ class _ProductEditPageState extends State<ProductEditPage> {
       ).showDialog(context);
   }
 
-  sizeTypePicker()
+  universalPicker(returnVarialble, pickerData)
   {
     Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(SizeTypeFull), isArray: true),
+        adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
         hideHeader: true,
         backgroundColor: appThemeAdditionalSecondHexColor,
         cancelTextStyle: TextStyle(color: Colors.blue),
         confirmTextStyle: TextStyle(color: Colors.blue),
         onConfirm: (Picker picker, List value) {
           setState(() {
-            bootSizeType = int.parse(value[0].toString());
+            switch(returnVarialble)
+            {
+              case 0:{
+                bootSizeType = int.parse(value[0].toString());
+                break;
+              }
+              case 1:{
+                bootModelName = picker.getSelectedValues()[0];
+                break;
+              }
+              case 2:{
+                bootMaterial = picker.getSelectedValues()[0];
+                break;
+              }
+            }
           });
         }
     ).showDialog(context);

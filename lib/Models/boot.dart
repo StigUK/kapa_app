@@ -8,7 +8,7 @@ class Boot
   String description="";
   String modelName="";
   double price=0;
-  int material=0;
+  String material="";
   Boot({this.width, this.height, this.size, this.modelName, this.material, this.sizeType, this.description, this.price});
 
   Map<String, dynamic> toMap() {
