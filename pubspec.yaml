@@ -25,7 +25,9 @@ dependencies:
     sdk: flutter
   firebase_auth: ^0.16.1
   firebase_core: ^0.4.5
+  firebase_storage: ^3.1.6
   flutter_picker: ^1.1.5
+  image_picker: ^0.6.7+4
   google_sign_in: ^4.5.1
   cloud_firestore: ^0.13.7
   flutter_webview_plugin: ^0.3.11

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Core/TextAreaValidator.dart';
 import 'package:kapa_app/Core/hexColor.dart';
+import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/LoginPage/Widgets/PictureWithText.dart';
 
@@ -147,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: Text('Верифікувати', style: TextStyle(color: Colors.white),),
                   padding: EdgeInsets.all(8.0),
-                  color: Theme.of(context).primaryColor,
+                  color: appThemeBlueMainColor,
                 ),
               ),
             ),

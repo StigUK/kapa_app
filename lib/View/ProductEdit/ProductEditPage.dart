@@ -13,7 +13,8 @@ import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
-import 'package:kapa_app/View/ProductEdit/ImageWidget.dart';
+import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
+import 'package:kapa_app/View/Widgets/CustomDialog.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -27,20 +28,22 @@ class ProductEditPage extends StatefulWidget {
 class _ProductEditPageState extends State<ProductEditPage> {
 
   var size;
+  //Boots temp Data
   double bootWidth=0;
   double bootHeight=0;
   double bootSize=33.5;
   int bootSizeType=0;
   String bootDescription="Some description";
   String bootModelName="Other";
-  String bootModelName2="sdas";
   double bootPrice=0;
   String bootMaterial="Шкіра";
+  List<String> images = [];
 
-  List<String> images;
   FirebaseStorage _storage = FirebaseStorage.instance;
+
   var descriptionTEC;
   var sizeOfContainer;
+
   File _image;
 
   @override
@@ -54,9 +57,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
         actions: <Widget>[
           FlatButton(
             onPressed: (){
-              
+              if(_showMyDialog("Зберегти зміни?")==true){
+                UploadAdd();
+              }
             },
-            child: Text("Зберегти",style: TextStyle(color: Colors.blue),),
+            child: Text("Зберегти",style: TextStyle(color: appThemeBlueMainColor),),
           )
         ],
       ),
@@ -67,7 +72,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
             children: <Widget>[
               //Зображення
               TextWithDot("Додати фото"),
-              ProductImages(),
+              GridImages(),
               //Розміри
               TextWithDot("Розміри"),
               bootSizes(),
@@ -97,7 +102,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 child: InkWell(
                   onTap: () {
                     universalPicker(2,BootMaterial);
-                    },
+                  },
                   child:  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(bootMaterial, style: defaultTextStyle, textAlign: TextAlign.start),
@@ -129,14 +134,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
               //Ціна
               TextWithDot("Ціна"),
               Container(
-                width: size.width-20,
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: decorationForContainerWithBorder_bottom,
-                child: TextField(
+                  width: size.width-20,
+                  padding: EdgeInsets.only(right: 10, left: 10),
+                  decoration: decorationForContainerWithBorder_bottom,
+                  child: TextField(
                     //controller: priceTEC,
                     onChanged: (value){
                       if(value!="")
-                      bootPrice = double.parse(value);
+                        bootPrice = double.parse(value);
                       else bootPrice = 0.0;
                     },
                     keyboardType: TextInputType.number,
@@ -150,33 +155,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     maxLines: 1,
                   )
               ),
-              FloatingActionButton(
-                onPressed: (){
-                  //uploadPic();
-                },
-                tooltip: 'Pick Image',
-                child: Icon(Icons.add_a_photo),
-              ),
-              FlatButton(
-                onPressed: (){
-                  FirestoreService fs = FirestoreService();
-                  Boot bt = Boot(
-                    width: 10,
-                    height: 10,
-                    size: 11,
-                    sizeType: 1,
-                    price: 10,
-                    material: "Матеріал",
-                    description: 'Піздаті кроси',
-                    modelName: "Nike",
-                  );
-                  Ad _ad = Ad();
-                  _ad.boot = bt;
-                  _ad.userId = '1';
-                  fs.addNewAdd(_ad);
-                },
-                child: Text('text'),
-              )
             ],
           ),
         ),
@@ -355,108 +333,70 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Widget ProductImages()
+  Widget GridImages()
   {
-    int imLength = 3;
-    //imLength==null ? imLength = 0 : imLength = images.length;
-    print(imLength);
-    sizeOfContainer = (size.width-50)/4;
-    return Container(
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: appThemeAdditionalHexColor,
-      ),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              GestureDetector(
-                  onTap: (){},
-                  child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
-              ),
-              imLength<1 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
-                  )
-              ),
-              imLength<2 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: imageWidget(link:'https://picsum.photos/200', sizeOfContainer: sizeOfContainer),
-                  )
-              ),
-              imLength<3 ? Container() : GestureDetector(
-                  onTap: (){
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      height: sizeOfContainer,
-                      width: sizeOfContainer,
-                    ),
-                  )
-              ),
-            ],
+    try{
+      return Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: appThemeAdditionalHexColor,
+        ),
+        child: SizedBox(
+          height: images.length >= 4 ? (size.width)/2 : (size.width)/4,
+          child: GridView.count(
+            crossAxisCount: 4,
+            scrollDirection: Axis.vertical,
+            children: images.length==8 ?
+            List.generate(images.length, (index) {
+              return stackImage(index);
+              }):
+            List.generate(images.length+1, (index) {
+              if(images.length==8) {
+                print(images.length);
+                if(images.length>index)
+                  return stackImage(index);
+                else return Container();
+              }
+              else {
+                if(index < images.length) {
+                  return stackImage(index);
+                }
+                else return roundedContainer(
+                    childWidget: FlatButton(
+                      onPressed: (){
+                        uploadPic();
+                      },
+                      child: Image.asset('assets/images/ProductEditPage/Photo.png'),
+                    ));
+              };
+            }),
           ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              imLength<4 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      height: sizeOfContainer,
-                      width: sizeOfContainer,
-                    ),
-                  )
-              ),
-              imLength<5 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      height: sizeOfContainer,
-                      width: sizeOfContainer,
-                    ),
-                  )
-              ),
-              imLength<6 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      height: sizeOfContainer,
-                      width: sizeOfContainer,
-                    ),
-                  )
-              ),
-              imLength<7 ? Container() : GestureDetector(
-                  onTap: (){},
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://picsum.photos/200',
-                      height: sizeOfContainer,
-                      width: sizeOfContainer,
-                    ),
-                  )
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      );
+    }
+    catch(e)
+    {
+    print(e);
+    }
+
+  }
+
+  Widget stackImage(int index)
+  {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        roundedContainer(childWidget: Image.network(images[index])),
+        FlatButton(
+          onPressed: (){
+            images.removeAt(index);
+            setState(() {
+              images = images;
+            });
+          },
+          child: Image.asset("assets/images/ProductEditPage/close.png", width: 40,),
+        )
+      ],
     );
   }
 
@@ -466,8 +406,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
           adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(setSizesArray(bootSizeType)), isArray: true),
           hideHeader: true,
           backgroundColor: appThemeAdditionalSecondHexColor,
-          cancelTextStyle: TextStyle(color: Colors.blue),
-          confirmTextStyle: TextStyle(color: Colors.blue),
+          cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+          confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
           onConfirm: (Picker picker, List value) {
             setState(() {
               bootSize = double.parse(picker.getSelectedValues()[0]);
@@ -482,8 +422,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
         hideHeader: true,
         backgroundColor: appThemeAdditionalSecondHexColor,
-        cancelTextStyle: TextStyle(color: Colors.blue),
-        confirmTextStyle: TextStyle(color: Colors.blue),
+        cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+        confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
         onConfirm: (Picker picker, List value) {
           setState(() {
             switch(returnVarialble)
@@ -512,20 +452,76 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Future<String> uploadPic(File image) async {
+  UploadAdd()
+  {
+    FirestoreService fs = FirestoreService();
+    Boot bt = Boot(
+      width: bootWidth,
+      height: bootHeight,
+      size: bootSize,
+      sizeType: bootSizeType,
+      price: bootPrice,
+      material: bootMaterial,
+      description: bootDescription,
+      modelName: bootModelName,
+    );
+    Ad _ad = Ad();
+    _ad.boot = bt;
+    _ad.userId = '1';
+    fs.addNewAdd(_ad);
+  }
+
+  Future<void> _showMyDialog(dialogTitle) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Container(
+          child: AlertDialog(
+            title: Center(child: Text(dialogTitle, style: defaultTextStyle,)),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FlatButton(
+                  child: Text('Ні',style: defaultTextStyle,),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(8.0),
+                  color: appThemeBlueMainColor,
+                ),
+                FlatButton(
+                  child: Text('Так',style: defaultTextStyle,),
+                  onPressed: () {
+                    return true;
+                  },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(8.0),
+                  color: appThemeBlueMainColor,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String> uploadPic() async {
+    File image;
     try {
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
     } on PlatformException catch (e) {
       return null;
     }
-    StorageReference reference =
-    _storage.ref().child(image.path.split('/').last);
-    print("776tyugjhj"+image.path);
+    StorageReference reference = _storage.ref().child(image.path.split('/').last);
     String filePath = 'images/${DateTime.now()}.png';
     StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
-    /*StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    // Waits till the file is uploaded then stores the download url
-    String url = await taskSnapshot.ref.getDownloadURL();*/
-    //print(url);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    String url = await taskSnapshot.ref.getDownloadURL();
+    setState(() {
+      images.add(url);
+    });
   }
 }
