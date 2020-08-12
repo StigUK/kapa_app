@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,8 @@ import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
+import 'package:kapa_app/View/MainPage/MainPage.dart';
 import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
-import 'package:kapa_app/View/Widgets/CustomDialog.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
   double bootHeight=0;
   double bootSize=33.5;
   int bootSizeType=0;
-  String bootDescription="Some description";
+  String bootDescription="";
   String bootModelName="Other";
   double bootPrice=0;
   String bootMaterial="Шкіра";
@@ -44,7 +45,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
   var descriptionTEC;
   var sizeOfContainer;
 
+  String error="";
+
   File _image;
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +60,16 @@ class _ProductEditPageState extends State<ProductEditPage> {
         backgroundColor: appThemeBackgroundHexColor,
         actions: <Widget>[
           FlatButton(
-            onPressed: (){
-              if(_showMyDialog("Зберегти зміни?")==true){
-                UploadAdd();
-              }
-            },
-            child: Text("Зберегти",style: TextStyle(color: appThemeBlueMainColor),),
+              onPressed: (){
+                if(checkFields()==true)
+                  {
+                    _showMyDialog(dialogTitle: "Зберегти зміни?");
+                    setState(() {
+                      error = "";
+                    });
+                  }
+              },
+              child: Text("Зберегти",style: TextStyle(color: appThemeBlueMainColor))
           )
         ],
       ),
@@ -155,6 +163,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     maxLines: 1,
                   )
               ),
+              showErrorText(error),
             ],
           ),
         ),
@@ -446,14 +455,38 @@ class _ProductEditPageState extends State<ProductEditPage> {
     ).showDialog(context);
   }
 
+  bool checkFields()
+  {
+    if(images.length<1)
+      {
+        setState(() {
+          error = "Додайте хоча б одне фото";
+        });
+        return false;
+      }
+    else
+    if((bootHeight==0)||(bootWidth==0)||(bootDescription==""))
+      setState(() {
+      error = "Заповніть всі поля";
+      return false;
+    });
+    else
+    return true;
+  }
+
   Widget showErrorText(String error)
   {
     return Container(
+      child: Center(
+        child: Text(error, style: TextStyle(color: Colors.red),),
+      )
     );
   }
 
   UploadAdd()
-  {
+  async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseUser user = await _auth.currentUser();
     FirestoreService fs = FirestoreService();
     Boot bt = Boot(
       width: bootWidth,
@@ -466,12 +499,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
       modelName: bootModelName,
     );
     Ad _ad = Ad();
+    _ad.images = images;
     _ad.boot = bt;
-    _ad.userId = '1';
+    _ad.userId = user.uid;
     fs.addNewAdd(_ad);
   }
 
-  Future<void> _showMyDialog(dialogTitle) async {
+  Future<void> _showMyDialog({String dialogTitle}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -494,7 +528,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 FlatButton(
                   child: Text('Так',style: defaultTextStyle,),
                   onPressed: () {
-                    return true;
+                    UploadAdd();
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
                   },
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   padding: EdgeInsets.all(8.0),
