@@ -6,6 +6,7 @@ import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
+import 'package:kapa_app/View/MainPage/AllBootsList.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 
@@ -24,7 +25,7 @@ class MainPageState extends State<MainPage> {
   AuthService authService = AuthService();
 
   final tabs = [
-    Center(child: Text("MainPage"),),
+    AllBootsListView(),
     Center(child: Text("My boots"),),
     Center(child: Text("my boobs"),),
     Center(child: Text("fauvorites"),),
