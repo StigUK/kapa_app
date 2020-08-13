@@ -5,6 +5,7 @@ import 'package:kapa_app/Core/hexColor.dart';
 import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
+import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 
@@ -21,6 +22,16 @@ class MainPageState extends State<MainPage> {
   final FirebaseUser firebaseUser;
   MainPageState({this.firebaseUser});
   AuthService authService = AuthService();
+
+  final tabs = [
+    Center(child: Text("MainPage"),),
+    Center(child: Text("My boots"),),
+    Center(child: Text("my boobs"),),
+    Center(child: Text("fauvorites"),),
+    AccountInfo(),
+  ];
+
+  int _currentIndex=0;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
@@ -37,58 +48,20 @@ class MainPageState extends State<MainPage> {
               fit: BoxFit.cover,
             )
           ),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      alignment: Alignment.bottomLeft,
-                      icon: Icon(
-                        Icons.filter_list,
-                        color: Colors.white,
-                      ),
-                      onPressed: () { authService.signOut(); },
-                    ),
-                    Expanded(child: Container(),),
-                  ],
-                ),
-              ),
-              /*Padding(
-                padding: EdgeInsets.only(top: 0),
-                child: SizedBox(
-                  height: 50.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: RaisedButton(onPressed: (){
-                   signOut();
-                  },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: Text('SignOut', style: TextStyle(color: Colors.white),),
-                    padding: EdgeInsets.all(8.0),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 150, 0, 50),
-                child:  Image.asset('assets/images/LoginPage/Shape-18-copy-30.png', height: 373.0,),
-              ),*/
-            ],
-          ),
+          child: tabs[_currentIndex],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         decoration: BoxDecoration(
-          border: Border.all(color:  HexColor("#505051"), width: 5),
-          color:  HexColor("#505051"),
+          border: Border.all(color:  appThemeBottomAppBarBackground, width: 5),
           shape: BoxShape.circle,
         ),
         height: 65.0,
         width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(
+            backgroundColor: appThemeBlueMainColor,
             onPressed: () {
               Navigator.push(
                 context,
@@ -103,25 +76,34 @@ class MainPageState extends State<MainPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        //notchMargin: 4.0,
-        child: Container(
-          height: 65,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.border_all, color: Colors.blue,), onPressed: () {},),
-              IconButton(icon: Icon(Icons.filter_drama, color: Colors.blue,), onPressed: () {},),
-              IconButton(icon: Icon(Icons.favorite, color: Colors.blue,), onPressed: () {
-              },),
-              IconButton(icon: Icon(Icons.settings, color: Colors.blue,), onPressed: () {},),
-            ],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: appThemeBottomAppBarBackground,
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.border_all),
+              title: Text("")
           ),
-        ),
-        color: HexColor("#505051"),
-      ),
+          BottomNavigationBarItem(icon: Icon(Icons.rowing),
+              title: Text("")
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
+              title: Text("")
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite),
+              title: Text("")
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.settings),
+              title: Text(""),
+          ),
+        ],
+        onTap: (index){
+          if(index!=2)
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      )
     );
   }
 

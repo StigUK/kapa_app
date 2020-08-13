@@ -498,10 +498,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       description: bootDescription,
       modelName: bootModelName,
     );
-    Ad _ad = Ad();
-    _ad.images = images;
-    _ad.boot = bt;
-    _ad.userId = user.uid;
+    Ad _ad = Ad(images: images, boot: bt, userId: user.uid);
     fs.addNewAdd(_ad);
   }
 

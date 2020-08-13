@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 
+import 'Resources/colors.dart';
+
 void main() {
   runApp(Main());
 }
@@ -18,6 +20,7 @@ class Main extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           colorScheme: ColorScheme.dark(),
+          accentColor: appThemeBlueMainColor,
           textTheme: TextTheme(
             bodyText2: TextStyle(
               color: Colors.white,

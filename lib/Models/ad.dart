@@ -7,6 +7,8 @@ class Ad
   String userId;
   Boot boot;
 
+  Ad({this.images, this.userId, this.boot});
+
   Map<String, dynamic> toMap() {
     return {
       "images": images,
