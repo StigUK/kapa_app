@@ -15,8 +15,14 @@ const defaultTextStyleBlack = TextStyle(
 
 const smallTextStyle = TextStyle(
   color: defaultTextColor,
-  fontSize: 12,
+  fontSize: 13,
 );
+
+const smallTextStyleGray = TextStyle(
+  color: defaultGrayTextColor,
+  fontSize: 13,
+);
+
 
 // ignore: non_constant_identifier_names
 final decorationForContainerWithBorder_bottom = BoxDecoration(

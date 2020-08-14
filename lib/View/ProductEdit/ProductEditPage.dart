@@ -49,6 +49,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   File _image;
 
+  String uniqAd = DateTime.now().toString();
 
   @override
   Widget build(BuildContext context) {
@@ -498,8 +499,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
       description: bootDescription,
       modelName: bootModelName,
     );
-    Ad _ad = Ad(images: images, boot: bt, userId: user.uid);
-    fs.addNewAdd(_ad);
+    Ad _ad = Ad(images: images, boot: bt, userId: user.uid, active: true);
+    fs.addNewAd(_ad);
   }
 
   Future<void> _showMyDialog({String dialogTitle}) async {
@@ -548,7 +549,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       return null;
     }
     StorageReference reference = _storage.ref().child(image.path.split('/').last);
-    String filePath = 'images/${DateTime.now()}.png';
+    String filePath = 'images/$uniqAd/${DateTime.now()}.png';
     StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String url = await taskSnapshot.ref.getDownloadURL();

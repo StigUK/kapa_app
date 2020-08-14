@@ -7,6 +7,7 @@ import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/MainPage/AllBootsList.dart';
+import 'package:kapa_app/View/MainPage/Favorites.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 
@@ -28,7 +29,7 @@ class MainPageState extends State<MainPage> {
     AllBootsListView(),
     Center(child: Text("My boots"),),
     Center(child: Text("my boobs"),),
-    Center(child: Text("fauvorites"),),
+    FavoritesList(),
     AccountInfo(),
   ];
 
@@ -39,18 +40,24 @@ class MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: customAppBar(),
       backgroundColor: appThemeBackgroundHexColor,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(),
-        sized: false,
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/MainPage/MainBackground.png"),
-              fit: BoxFit.cover,
-            )
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(),
+            sized: false,
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/MainPage/MainBackground.png"),
+                    fit: BoxFit.cover,
+                  )
+              ),
+              child: tabs[_currentIndex],
+            ),
           ),
-          child: tabs[_currentIndex],
-        ),
+        )
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(

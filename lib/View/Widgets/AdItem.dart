@@ -22,44 +22,76 @@ Widget AdItem(Ad _ad, size)
             Container(
               child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(_ad.images.first, width: size.width/3.5,),
+              child: Image.network(_ad.images.first, width: size.width/3.5, height: size.width/3.5, fit: BoxFit.cover,),
               ),
             ),
             //Boot info
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child:  Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(_ad.boot.modelName,style: defaultTextStyle,),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Text("Розміри стопи:", style: smallTextStyle,),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(6),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_ad.boot.modelName,style: defaultTextStyle,),
                           Padding(
-                          padding: EdgeInsets.only(top: 5),
-                          child: Text("Розміри стопи:", style: smallTextStyle,),
+                            padding: EdgeInsets.all(5),
+                            child:  Column(
+                              children: [
+                                Text(_ad.boot.size.toString(), style: TextStyle(color: appThemeBlueMainColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                                Text(SizeType[_ad.boot.sizeType],style: smallTextStyle,),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child:  Column(
+                              children: [
+                                Text(_ad.boot.height.toString(), style: defaultTextStyle,),
+                                Text("Довжина / см", style: smallTextStyle,),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child:  Column(
+                              children: [
+                                Text(_ad.boot.width.toString(), style: defaultTextStyle,),
+                                Text("Ширина / см", style: smallTextStyle,),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Text("Матеріал: ${_ad.boot.material}", style: smallTextStyleGray,),
+                  ],
+                ),
               ),
             ),
           ],
         ),
         )
       ),
-      Padding(
-        padding: EdgeInsets.only(left: 13),
-        child: Container(
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: appThemeYellowMainColor
-          ),
-          child: Text("100 грн",style: defaultTextStyleBlack,),
+       Positioned(
+          top: 20,
+          right: 5,
+          child: Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: appThemeYellowMainColor
+            ),
+            child: Text("${_ad.boot.price.round()} грн",style: defaultTextStyleBlack,),
         ),
       ),
     ],
