@@ -99,6 +99,7 @@ class _FavoritesListState extends State<FavoritesList> {
       setState(() {
         favorites = listFavorites;
       });
+      if(favorites.length==0) loadData = true;
     });
     await _db.collection("ads").getDocuments().then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {

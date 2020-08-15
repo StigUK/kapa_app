@@ -93,7 +93,7 @@ class _ProductViewState extends State<ProductView> {
                           ),
                         ],
                       ),
-                      Text(ad.boot.modelName,style: bigTextStyleBlack,),
+                      Text(ad.boot.modelName,style: bigTextStyle,),
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Row(

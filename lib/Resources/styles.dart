@@ -13,7 +13,7 @@ const defaultTextStyleBlack = TextStyle(
   fontSize: 20,
 );
 
-const bigTextStyleBlack = TextStyle(
+const bigTextStyle = TextStyle(
   color: defaultTextColor,
   fontSize: 30,
 );

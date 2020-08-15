@@ -25,28 +25,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body:SingleChildScrollView (
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 150, 0, 50),
-                child:  Image.asset('assets/images/LoginPage/Shape-18-copy-30.png', height: 373.0,),
-              ),
-              Container(
-                width: 250.0,
-                height: 200.0,
-                child: PictureWithText(),
-              ),
-              phone ? all_LoginMethods() : LoginWithPhone(),
-              //Text(AppLoc.of(context).Login),
-            ],
+    return WillPopScope(
+      onWillPop: () async{
+        return false;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body:SingleChildScrollView (
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 150, 0, 50),
+                  child:  Image.asset('assets/images/LoginPage/Shape-18-copy-30.png', height: 373.0,),
+                ),
+                Container(
+                  width: 250.0,
+                  height: 200.0,
+                  child: PictureWithText(),
+                ),
+                phone ? all_LoginMethods() : LoginWithPhone(),
+                //Text(AppLoc.of(context).Login),
+              ],
+            ),
           ),
         ),
+        backgroundColor: HexColor("#232326"),
       ),
-      backgroundColor: HexColor("#232326"),
     );
   }
 

@@ -56,6 +56,7 @@ class AuthService
   signOut()
   {
     _auth.signOut();
+    signOutGoogle();
   }
 
   signInWithCredential(AuthCredential authCredential)

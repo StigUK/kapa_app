@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Models/userinfo.dart';
 import 'package:kapa_app/Services/authservice.dart';
@@ -62,10 +63,22 @@ class FirestoreService
     await _db.collection('userdata').document(user.uid).setData(userData.toMap());
   }
 
+  getUserData(String uid) async{
+    await _db.collection("userdata").document(uid).get().then((value)
+    {
+      UserData _userData = UserData(name: value.data['name'], city: value.data['city'],phoneNumber: value.data['phoneNumber'], image: value.data['image'],);
+    });
+  }
+
   Future<bool> checkUserDataExist()
   async {
     final FirebaseUser user = await _auth.currentUser();
-    var document = await _db.collection('userdata').document(user.uid).get();
+    var document = await _db.collection('userdata').document(user.uid).get().then((value)
+      {
+
+      }
+    );
+
     if(document.data!=null)
       return true;
     else return false;

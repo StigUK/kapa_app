@@ -36,96 +36,104 @@ class MainPageState extends State<MainPage> {
 
   bool userDataExis = false;
   int _currentIndex=0;
+  int _previousIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     if (!userDataExis) checkUserDataExist();
-    return userDataExis ? Scaffold(
-      appBar: customAppBar(),
-      backgroundColor: appThemeBackgroundHexColor,
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(),
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: const SystemUiOverlayStyle(),
-            sized: false,
-            child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/MainPage/MainBackground.png"),
-                    fit: BoxFit.cover,
-                  )
+    return WillPopScope(
+      onWillPop: () async{
+        int temp;
+        temp = _currentIndex;
+        setState(() {
+          _currentIndex = _previousIndex;
+          _previousIndex = temp;
+        });
+        return false;
+      },
+      child: userDataExis ? Scaffold(
+          appBar: customAppBar(),
+          backgroundColor: appThemeBackgroundHexColor,
+          body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: const SystemUiOverlayStyle(),
+                  sized: false,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/MainPage/MainBackground.png"),
+                          fit: BoxFit.cover,
+                        )
+                    ),
+                    child: tabs[_currentIndex],
+                  ),
+                ),
+              )
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color:  appThemeBottomAppBarBackground, width: 5),
+              shape: BoxShape.circle,
+            ),
+            height: 65.0,
+            width: 65.0,
+            child: FittedBox(
+              child: FloatingActionButton(
+                backgroundColor: appThemeBlueMainColor,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProductEditPage()),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                // elevation: 5.0,
               ),
-              child: tabs[_currentIndex],
             ),
           ),
-        )
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color:  appThemeBottomAppBarBackground, width: 5),
-          shape: BoxShape.circle,
-        ),
-        height: 65.0,
-        width: 65.0,
-        child: FittedBox(
-          child: FloatingActionButton(
-            backgroundColor: appThemeBlueMainColor,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductEditPage()),
-              );
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: appThemeBottomAppBarBackground,
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.border_all),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.rowing),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.favorite),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.settings),
+                title: Text(""),
+              ),
+            ],
+            onTap: (index){
+              if(index!=2)
+                setState(() {
+                  _previousIndex = _currentIndex;
+                  _currentIndex = index;
+                });
             },
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            // elevation: 5.0,
-          ),
+          )
+      ) : Container(
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: appThemeBottomAppBarBackground,
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.border_all),
-              title: Text("")
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.rowing),
-              title: Text("")
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
-              title: Text("")
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite),
-              title: Text("")
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.settings),
-              title: Text(""),
-          ),
-        ],
-        onTap: (index){
-          if(index!=2)
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      )
-    ) : Container(
-      child: Center(
-        child: CircularProgressIndicator(),
       ),
     );
-  }
-
-  signOut()
-  {
-    //AuthService().signOut();
   }
 
   checkUserDataExist()

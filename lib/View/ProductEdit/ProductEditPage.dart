@@ -404,7 +404,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               images = images;
             });
           },
-          child: Image.asset("assets/images/ProductEditPage/close.png", width: 40,),
+          child: Image.asset("assets/images/ProductEditPage/close.png", width: 40),
         )
       ],
     );
@@ -555,6 +555,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     String url = await taskSnapshot.ref.getDownloadURL();
     setState(() {
       images.add(url);
+      print(url);
     });
   }
 }

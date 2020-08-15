@@ -1,7 +1,14 @@
+///
+///   If user login and don't have userData (Name, phone number, city)
+///   He will be redirected on this page.
+///
+
+
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Core/TextAreaValidator.dart';
 import 'package:kapa_app/Models/userinfo.dart';
 import 'package:kapa_app/Resources/colors.dart';
+import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/LoginPage/Widgets/PictureWithText.dart';
@@ -58,7 +65,7 @@ class _UserDataInputState extends State<UserDataInput> {
             SendDataToFirestore();
           },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            child: Text('Готово', style: TextStyle(color: Colors.white),),
+            child: Text('Готово', style: defaultTextStyle,),
             padding: EdgeInsets.all(8.0),
             color: appThemeBlueMainColor,
           ),
