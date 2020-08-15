@@ -2,7 +2,7 @@ validateTextArea(String value)
 {
   if(value.length == 0)
   {
-    return 'This field cannot be empty!';
+    return 'Це поле не може бути порожнім';
   }
   else return null;
 }

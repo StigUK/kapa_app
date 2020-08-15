@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
+import 'package:kapa_app/View/%20ProductViewing/ProductView.dart';
 import 'package:kapa_app/View/Widgets/AdItem.dart';
 
 class FavoritesList extends StatefulWidget {
@@ -41,7 +42,7 @@ class _FavoritesListState extends State<FavoritesList> {
                     GestureDetector(
                       child:AdItem(listAds[i], size),
                       onTap: (){
-                        print(listAds[i].key);
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listAds[i],isFavorite: isFavorite),));
                       },
                     ),
                     Positioned(
@@ -107,7 +108,6 @@ class _FavoritesListState extends State<FavoritesList> {
         });
       });
       setState(() {
-        print("SetState?");
         loadData = true;
         listAds = listOfAds;
       });

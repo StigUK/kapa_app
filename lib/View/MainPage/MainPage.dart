@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,26 +6,26 @@ import 'package:kapa_app/Core/hexColor.dart';
 import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
+import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/MainPage/AllBootsList.dart';
 import 'package:kapa_app/View/MainPage/Favorites.dart';
+import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 
 class MainPage extends StatefulWidget {
-  final FirebaseUser firebaseUser;
-  MainPage({this.firebaseUser});
   @override
   State<StatefulWidget> createState() {
-    return new MainPageState(firebaseUser: firebaseUser);
+    return new MainPageState();
   }
 }
 
 class MainPageState extends State<MainPage> {
-  final FirebaseUser firebaseUser;
-  MainPageState({this.firebaseUser});
+  final Firestore _db = Firestore.instance;
   AuthService authService = AuthService();
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirestoreService fs = FirestoreService();
   final tabs = [
     AllBootsListView(),
     Center(child: Text("My boots"),),
@@ -33,11 +34,14 @@ class MainPageState extends State<MainPage> {
     AccountInfo(),
   ];
 
+  bool userDataExis = false;
   int _currentIndex=0;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    return Scaffold(
+    if (!userDataExis) checkUserDataExist();
+    return userDataExis ? Scaffold(
       appBar: customAppBar(),
       backgroundColor: appThemeBackgroundHexColor,
       body: SingleChildScrollView(
@@ -112,11 +116,26 @@ class MainPageState extends State<MainPage> {
           });
         },
       )
+    ) : Container(
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
   signOut()
   {
     //AuthService().signOut();
+  }
+
+  checkUserDataExist()
+  async {
+    final FirebaseUser user = await _auth.currentUser();
+    var document = await _db.collection('userdata').document(user.uid).get();
+    if(document.data!=null)
+      setState(() {
+        userDataExis = true;
+      });
+    else Navigator.push(context, MaterialPageRoute(builder: (context) => UserDataInput()),);
   }
 }

@@ -13,7 +13,7 @@ class AccountInfo extends StatefulWidget {
 
 class _AccountInfoState extends State<AccountInfo> {
 
-  UserInfo _userInfo = UserInfo(image: "https://picsum.photos/200", name: "Підор", phoneNumber: "+380970606449", city: "Венеция", userId: "24324");
+  UserData _userData = UserData(image: "https://picsum.photos/200", name: "Підор", phoneNumber: "+380970606449", city: "Венеция");
   var size;
 
   @override
@@ -29,7 +29,7 @@ class _AccountInfoState extends State<AccountInfo> {
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
                   radius: 65,
-                  backgroundImage: NetworkImage(_userInfo.image),
+                  backgroundImage: NetworkImage(_userData.image),
                 ),
               ),
               Padding(
@@ -38,9 +38,9 @@ class _AccountInfoState extends State<AccountInfo> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(bottom: 5),
-                      child:  Text(_userInfo.name, style: defaultTextStyle,),
+                      child:  Text(_userData.name, style: defaultTextStyle,),
                     ),
-                    Text(_userInfo.city, style: TextStyle(color: Colors.white54),),
+                    Text(_userData.city, style: TextStyle(color: Colors.white54),),
                   ],
                 ),
               ),
@@ -64,7 +64,7 @@ class _AccountInfoState extends State<AccountInfo> {
             decoration: decorationForContainerWithBorder_bottom,
             child: Padding(
               padding: EdgeInsets.only(bottom: 5),
-              child: Text(_userInfo.phoneNumber, style: defaultTextStyle,),
+              child: Text(_userData.phoneNumber, style: defaultTextStyle,),
             ),
           ),
           //City

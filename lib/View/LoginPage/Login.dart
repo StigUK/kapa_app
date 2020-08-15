@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   }  : sendSMScode();
                 },
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   child: Text('Верифікувати', style: TextStyle(color: Colors.white),),
                   padding: EdgeInsets.all(8.0),
                   color: appThemeBlueMainColor,
@@ -160,18 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
   pressLoginWithGoogle()
   {
     authService.signInWithGoogle();
-    /*authService.signInWithGoogle().whenComplete(()
-      {
-       Navigator.of(context).push(
-         MaterialPageRoute(
-           builder: (context)
-               {
-                 return MainPage();
-               }
-         )
-       );
-      }
-    );*/
   }
 
   pressLoginWithFacebook()

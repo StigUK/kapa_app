@@ -5,6 +5,7 @@ import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
+import 'package:kapa_app/View/%20ProductViewing/ProductView.dart';
 import 'package:kapa_app/View/Widgets/AdItem.dart';
 
 class AllBootsListView extends StatefulWidget {
@@ -65,7 +66,8 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                         GestureDetector(
                           child: AdItem(listAds[i], size),
                           onTap: (){
-                            print(listAds[i].key);
+                            //print(listAds[i].key);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listAds[i], isFavorite: isFavorite,)));
                           },
                         ),
                         Positioned(

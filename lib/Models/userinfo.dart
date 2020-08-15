@@ -1,5 +1,7 @@
 
-class UserInfo
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserData
 {
   String userId;
   String phoneNumber;
@@ -7,15 +9,23 @@ class UserInfo
   String city;
   String image;
 
-  UserInfo({this.userId, this.name, this.city, this.phoneNumber, this.image});
+  UserData({this.name, this.city, this.phoneNumber, this.image});
 
   Map<String, dynamic> toMap() {
     return {
-      "userId": userId,
       "phoneNumber": phoneNumber,
       "name": name,
       "city": city,
       "image": image
     };
+  }
+
+  factory UserData.fromDocument(DocumentSnapshot doc) {
+    return UserData(
+        image: doc['image'] ?? [''],
+        name: doc['name'] ?? [''],
+        city: doc['city'] ?? [''],
+        phoneNumber: doc['phoneNumber'] ?? [''],
+    );
   }
 }

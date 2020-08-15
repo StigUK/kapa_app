@@ -9,8 +9,6 @@ void main() {
 }
 
 class Main extends StatelessWidget {
-
-  //AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();

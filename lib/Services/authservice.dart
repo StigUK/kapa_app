@@ -7,7 +7,6 @@ import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Services/customWebView.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService
 {
@@ -38,8 +37,7 @@ class AuthService
     }
   }
 
-  handleAuth()
-  {
+  handleAuth() {
     return StreamBuilder(
       stream: _auth.onAuthStateChanged,
       builder: (context, snapshot)
