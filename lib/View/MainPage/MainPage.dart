@@ -8,8 +8,9 @@ import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
-import 'package:kapa_app/View/MainPage/AllBootsList.dart';
-import 'package:kapa_app/View/MainPage/Favorites.dart';
+import 'package:kapa_app/View/MainPage/Pages/UserAds.dart';
+import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/AllBootsList.dart';
+import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/Favorites.dart';
 import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
@@ -28,8 +29,8 @@ class MainPageState extends State<MainPage> {
   FirestoreService fs = FirestoreService();
   final tabs = [
     AllBootsListView(),
-    Center(child: Text("My boots"),),
-    Center(child: Text("my boobs"),),
+    UserAdsPage(),
+    Center(child: Text("SecretPage"),),
     FavoritesList(),
     AccountInfo(),
   ];
@@ -88,7 +89,7 @@ class MainPageState extends State<MainPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProductEditPage()),
+                    MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
                   );
                 },
                 child: Icon(
@@ -111,7 +112,7 @@ class MainPageState extends State<MainPage> {
                   title: Text("")
               ),
               BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
-                  title: Text("")
+                  title: Text(""),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.favorite),
                   title: Text("")

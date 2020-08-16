@@ -1,12 +1,19 @@
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Data/PickersData.dart';
 import 'package:kapa_app/Models/ad.dart';
+import 'package:kapa_app/Models/userinfo.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
-import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:kapa_app/View/MainPage/MainPage.dart';
+import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
+import 'package:kapa_app/View/Widgets/FullScreenImagesView.dart';
+import 'package:kapa_app/View/Widgets/ImagesCarousel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductView extends StatefulWidget {
 
@@ -26,12 +33,20 @@ class _ProductViewState extends State<ProductView> {
   bool isFavorite;
   _ProductViewState({this.ad, this.isFavorite});
   var size;
+  UserData _userData;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool userDataLoad = false;
+  bool isUserAd = false;
+  bool isArchive = false;
+  FirestoreService fs = FirestoreService();
 
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     print(ad.key);
-    FirestoreService fs = FirestoreService();
+    if(!userDataLoad) getUserData();
+    if(!isUserAd) checkIsUserAd();
+    if(isUserAd && isFavorite) isArchive = true;
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -58,7 +73,12 @@ class _ProductViewState extends State<ProductView> {
               ),*/
                 Padding(
                   padding: EdgeInsets.only(bottom: 10),
-                  child: imagesCarousel(),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FullScreenImageView(images: ad.images)));
+                    },
+                    child:  imagesCarousel(ad.images, BoxFit.cover, 500.0),
+                  ),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -79,9 +99,9 @@ class _ProductViewState extends State<ProductView> {
                             child: Text("${ad.boot.price.round()} грн",style: defaultTextStyleBlack,),
                           ),
                           Expanded(child: Container()),
-                          Padding(
+                          if(!isArchive) Padding(
                             padding: EdgeInsets.only(right: 10),
-                            child: IconButton(
+                            child: !isUserAd ? IconButton(
                               icon: Icon(Icons.favorite, color: isFavorite ? Colors.red : Colors.white, size: 40,),
                               onPressed: () {
                                 isFavorite ? fs.removeFavoriteProduct(ad.key) : fs.addNewFavoriteProduct(ad.key);
@@ -89,11 +109,20 @@ class _ProductViewState extends State<ProductView> {
                                   isFavorite=!isFavorite;
                                 });
                               },
+                            ) :
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditPage(ad: ad)));
+                              },
                             ),
                           ),
                         ],
                       ),
-                      Text(ad.boot.modelName,style: bigTextStyle,),
+                      Padding(
+                        padding: EdgeInsets.only(top:10),
+                        child: Text(ad.boot.modelName,style: bigTextStyle,),
+                      ),
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Row(
@@ -150,18 +179,27 @@ class _ProductViewState extends State<ProductView> {
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(10),
-        height: 100,
-        child: Center(
-          child: Row(
+        height: 120,
+        child: !isUserAd ? Center(
+          child: userDataLoad ? Row(
             children: [
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: CircleAvatar(),
+              Container(
+                width: 100,
+                padding: EdgeInsets.all(15),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
+                ),
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Вася"),
-                  Text("Минск")
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5),
+                    child: Text(_userData.name, style: defaultTextStyle),
+                  ),
+                  Text(_userData.city, style: smallTextStyle),
                 ],
               ),
               Expanded(
@@ -170,45 +208,98 @@ class _ProductViewState extends State<ProductView> {
               IconButton(
                 icon: Icon(Icons.call),
                 onPressed: (){
-
+                  launch("tel://${_userData.phoneNumber}");
                 },
               )
             ],
+          ) : Container(
+            child: CircularProgressIndicator()
           ),
-        )
+        ) : Center(
+          child: SizedBox(
+            height: 45.0,
+            width: MediaQuery.of(context).size.width-40,
+            child: !isArchive ? FlatButton(
+              onPressed: (){
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context){
+                    return AlertDialog(
+                      backgroundColor: appThemeAdditionalHexColor,
+                      title: Container(padding: EdgeInsets.all(20),child: Text("Ви впевнені, що хочете видалити?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
+                      content: Container(
+                        padding: EdgeInsets.only(top:20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50)
+                              ),
+                              child: FlatButton(
+                                child: Text('Ні',style: defaultTextStyle,),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                padding: EdgeInsets.all(8.0),
+                                color: appThemeBlueMainColor,
+                              ),
+                            ),
+                            Container(
+                              width: 150,
+                              child: FlatButton(
+                                child: Text('Так',style: defaultTextStyle,),
+                                onPressed: () {
+                                  fs.addAdToArchive(ad);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+                                },
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                padding: EdgeInsets.all(8.0),
+                                color: appThemeBlueMainColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+              },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              child: Text('Видалити оголшення', style: defaultTextStyle),
+              padding: EdgeInsets.all(8.0),
+              color: appThemeBlueMainColor,
+            ) : Container(),
+          ),
+        ),
       ),
       backgroundColor: appThemeBackgroundHexColor,
     );
   }
 
-  Widget imagesCarousel()
-  {
-    List<Widget> imagesList = List<Widget>();
-    ad.images.forEach((element) {
-      imagesList.add(
-          Image.network(element, fit: BoxFit.cover)
-      );
+  getUserData()
+  async{
+    final Firestore _db = Firestore.instance;
+    await _db.collection("userdata").document(ad.userId).get().then((value)
+    {
+      setState(() {
+        _userData = UserData(name: value.data['name'], city: value.data['city'],phoneNumber: value.data['phoneNumber'], image: value.data['image'],);
+        userDataLoad = true;
+      });
     });
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        height: 500,
-        child: Carousel(
-          boxFit: BoxFit.contain,
-          images: imagesList,
-          autoplay: false,
-          indicatorBgPadding: 15.0,
-          //dotBgColor: Colors.transparent,
-          animationCurve: Curves.fastOutSlowIn,
-          animationDuration: Duration(microseconds: 1000),
-          dotSize: 3.0,
-          borderRadius:true,
-          radius: Radius.circular(20),
-        ),
-      ),
-    );
+  }
+
+  checkIsUserAd()
+  async {
+    final FirebaseUser user = await _auth.currentUser();
+    if(ad.userId == user.uid)
+      {
+        setState(() {
+          print("RELOAD");
+          isUserAd = true;
+        });
+      }
   }
 }

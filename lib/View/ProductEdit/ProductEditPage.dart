@@ -19,14 +19,21 @@ import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
+
+  Ad ad;
+
+  ProductEditPage({this.ad});
+
   @override
   _ProductEditPageState createState()
   {
-    return _ProductEditPageState();
+    return _ProductEditPageState(ad: ad);
   }
 }
 
 class _ProductEditPageState extends State<ProductEditPage> {
+
+  _ProductEditPageState({this.ad});
 
   var size;
   //Boots temp Data
@@ -42,6 +49,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Ad ad;
+  bool initialized = false;
+
   var descriptionTEC;
   var sizeOfContainer;
 
@@ -53,6 +63,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(!initialized)initializeFields();
     descriptionTEC = TextEditingController(text: bootDescription);
     size = MediaQuery.of(context).size;
     return Scaffold(
@@ -64,7 +75,51 @@ class _ProductEditPageState extends State<ProductEditPage> {
               onPressed: (){
                 if(checkFields()==true)
                   {
-                    _showMyDialog(dialogTitle: "Зберегти зміни?");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context){
+                          return AlertDialog(
+                            backgroundColor: appThemeAdditionalHexColor,
+                            title: Container(padding: EdgeInsets.all(20),child: Text("Зберегти зміни?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
+                            content: Container(
+                              padding: EdgeInsets.only(top:20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50)
+                                    ),
+                                    child: FlatButton(
+                                      child: Text('Ні',style: defaultTextStyle),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                      padding: EdgeInsets.all(8.0),
+                                      color: appThemeBlueMainColor,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    child: FlatButton(
+                                      child: Text('Так',style: defaultTextStyle,),
+                                      onPressed: () {
+                                        UploadAdd();
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+                                      },
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                      padding: EdgeInsets.all(8.0),
+                                      color: appThemeBlueMainColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                    );
                     setState(() {
                       error = "";
                     });
@@ -500,45 +555,26 @@ class _ProductEditPageState extends State<ProductEditPage> {
       modelName: bootModelName,
     );
     Ad _ad = Ad(images: images, boot: bt, userId: user.uid, active: true);
-    fs.addNewAd(_ad);
+    ad==null ? fs.addNewAd(_ad) : fs.editAd(_ad);
   }
 
-  Future<void> _showMyDialog({String dialogTitle}) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return Container(
-          child: AlertDialog(
-            title: Center(child: Text(dialogTitle, style: defaultTextStyle,)),
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FlatButton(
-                  child: Text('Ні',style: defaultTextStyle,),
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop('dialog');
-                  },
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: EdgeInsets.all(8.0),
-                  color: appThemeBlueMainColor,
-                ),
-                FlatButton(
-                  child: Text('Так',style: defaultTextStyle,),
-                  onPressed: () {
-                    UploadAdd();
-                    Navigator.of(context, rootNavigator: true).pop('dialog');
-                  },
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: EdgeInsets.all(8.0),
-                  color: appThemeBlueMainColor,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  initializeFields() {
+    ad != null ?
+    setState(() {
+      bootDescription = ad.boot.description;
+      bootWidth = ad.boot.width;
+      bootHeight = ad.boot.height;
+      bootSize = ad.boot.size;
+      bootSizeType = ad.boot.sizeType;
+      bootPrice = ad.boot.price;
+      bootMaterial = ad.boot.material;
+      bootModelName = ad.boot.modelName;
+      images = ad.images;
+      initialized = true;
+    }) :
+    setState(() {
+      initialized = true;
+    });
   }
 
   Future<String> uploadPic() async {

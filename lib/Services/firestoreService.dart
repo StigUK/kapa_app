@@ -19,6 +19,22 @@ class FirestoreService
    await _db.collection('ads').add(_ad.toMap());
   }
 
+  editAd(Ad _ad)
+  async{
+    await _db.collection('ads').document(_ad.key).setData(_ad.toMap());
+  }
+
+  addAdToArchive(Ad _ad)
+  async{
+    final FirebaseUser user = await _auth.currentUser();
+    if(user.uid == _ad.userId)
+      {
+        await _db.collection('adsArchive').add(_ad.toMap());
+        await _db.collection('ads').document(_ad.key).delete();
+      }
+    else print("This ad does not belong to the current user");
+  }
+
   addNewFavorites(List<String> adsList)
   async {
     final FirebaseUser user = await _auth.currentUser();

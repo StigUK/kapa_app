@@ -28,6 +28,10 @@ const smallTextStyleGray = TextStyle(
   fontSize: 13,
 );
 
+const dialogTitleTextStyle = TextStyle(
+  color: defaultTextColor,
+  fontSize: 25,
+);
 
 // ignore: non_constant_identifier_names
 final decorationForContainerWithBorder_bottom = BoxDecoration(

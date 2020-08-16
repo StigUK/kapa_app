@@ -23,6 +23,10 @@ class _AccountInfoState extends State<AccountInfo> {
   var size;
   bool isLoad = false;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
