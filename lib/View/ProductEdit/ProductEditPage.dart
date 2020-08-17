@@ -21,9 +21,7 @@ import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 class ProductEditPage extends StatefulWidget {
 
   Ad ad;
-
   ProductEditPage({this.ad});
-
   @override
   _ProductEditPageState createState()
   {
@@ -485,8 +483,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
   {
     Picker(
         adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
+        textStyle: smallTextStyle,
         hideHeader: true,
-        backgroundColor: appThemeAdditionalSecondHexColor,
+        backgroundColor: appThemeAdditionalHexColor,
         cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
         confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
         onConfirm: (Picker picker, List value) {

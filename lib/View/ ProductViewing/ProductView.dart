@@ -208,7 +208,7 @@ class _ProductViewState extends State<ProductView> {
               IconButton(
                 icon: Icon(Icons.call),
                 onPressed: (){
-                  launch("tel://${_userData.phoneNumber}");
+                  launch("tel:${_userData.phoneNumber}");
                 },
               )
             ],

@@ -36,42 +36,44 @@ class _UserDataInputState extends State<UserDataInput> {
       onWillPop: () async{
         return false;
       },
-      child: Scaffold(
-        body: Container(
-          padding: EdgeInsets.only(top: 100),
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  width: 250.0,
-                  height: 200.0,
-                  child: PictureWithText(),
-                ),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: dataInputForm(),
-                ),
-              ],
+      child: SingleChildScrollView(
+        child: Scaffold(
+          body: Container(
+            padding: EdgeInsets.only(top: 100),
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                    width: 250.0,
+                    height: 200.0,
+                    child: PictureWithText(),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: dataInputForm(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          backgroundColor: appThemeBackgroundHexColor,
+          bottomNavigationBar: Container(
+            padding: EdgeInsets.all(20),
+            child: SizedBox(
+              height: 50.0,
+              width: MediaQuery.of(context).size.width,
+              child: RaisedButton(onPressed: (){
+                SendDataToFirestore();
+              },
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                child: Text('Готово', style: defaultTextStyle,),
+                padding: EdgeInsets.all(8.0),
+                color: appThemeBlueMainColor,
+              ),
             ),
           ),
         ),
-        backgroundColor: appThemeBackgroundHexColor,
-        bottomNavigationBar: Container(
-          padding: EdgeInsets.all(20),
-         child: SizedBox(
-          height: 50.0,
-          width: MediaQuery.of(context).size.width,
-          child: RaisedButton(onPressed: (){
-            SendDataToFirestore();
-          },
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            child: Text('Готово', style: defaultTextStyle,),
-            padding: EdgeInsets.all(8.0),
-            color: appThemeBlueMainColor,
-          ),
-        ),
-        ),
-      ),
+      )
     );
   }
 
