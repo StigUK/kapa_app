@@ -334,10 +334,16 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                           child: Container(
                             child: FlatButton(
                               onPressed: () {
-                                isFavorite
-                                    ? favorites.remove(listAds[i].key)
-                                    : favorites.add(listAds[i].key);
-                                fs.addNewFavorites(favorites);
+                                if(isFavorite)
+                                  {
+                                    favorites.remove(listAds[i].key);
+                                    fs.addNewFavorites(favorites);
+                                  }
+                                else
+                                  {
+                                    fs.addNewFavoriteProduct(listAds[i],favorites);
+                                    favorites.add(listAds[i].key);
+                                  }
                                 setState(() {
                                   favorites = favorites;
                                 });

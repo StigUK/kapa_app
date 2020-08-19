@@ -47,235 +47,241 @@ class _ProductViewState extends State<ProductView> {
     if(!userDataLoad) getUserData();
     if(!isUserAd) checkIsUserAd();
     if(isUserAd && isFavorite) isArchive = true;
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: appThemeAdditionalHexColor,
-            ),
-            child: Column(
-              children: [
-                /*Stack(
+    return WillPopScope(
+      onWillPop: (){
+        print(Navigator.of(context));
+        return Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: appThemeAdditionalHexColor,
+              ),
+              child: Column(
                 children: [
-                  imagesCarousel(),
-                  Positioned(
-                    child: FlatButton(
-                      onPressed: (){
-                        Navigator.pop(context);
+                  /*Stack(
+                  children: [
+                    imagesCarousel(),
+                    Positioned(
+                      child: FlatButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Icon(Icons.arrow_back_ios),
+                      ),
+                    ),
+                  ],
+                ),*/
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FullScreenImageView(images: ad.images)));
                       },
-                      child: Icon(Icons.arrow_back_ios),
+                      child:  imagesCarousel(ad.images, BoxFit.cover, 500.0),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: appThemeAdditionalHexColor,
+                    ),
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                  color: appThemeYellowMainColor
+                              ),
+                              child: Text("${ad.boot.price.round()} грн",style: defaultTextStyleBlack,),
+                            ),
+                            Expanded(child: Container()),
+                            if(!isArchive) Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: !isUserAd ? IconButton(
+                                icon: Icon(Icons.favorite, color: isFavorite ? Colors.red : Colors.white, size: 40,),
+                                onPressed: () {
+                                  isFavorite ? fs.removeFavoriteProduct(ad.key) : fs.addNewFavoriteProduct(ad,null);
+                                  setState(() {
+                                    isFavorite=!isFavorite;
+                                  });
+                                },
+                              ) :
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditPage(ad: ad)));
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top:10),
+                          child: Text(ad.boot.modelName,style: bigTextStyle,),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                                child:  Column(
+                                  children: [
+                                    Text(ad.boot.size.toString(), style: TextStyle(color: appThemeBlueMainColor, fontSize: 25, fontWeight: FontWeight.bold),),
+                                    Text(SizeType[ad.boot.sizeType],style: smallTextStyle,),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                                child:  Column(
+                                  children: [
+                                    Text(ad.boot.height.toString(), style: defaultTextStyle,),
+                                    Text("Довжина / см", style: smallTextStyle,),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                                child:  Column(
+                                  children: [
+                                    Text(ad.boot.width.toString(), style: defaultTextStyle,),
+                                    Text("Ширина / см", style: smallTextStyle,),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(),
+                              )
+                            ],
+                          ),
+                        ),
+                        Text("Матеріал: ${ad.boot.material}", style: smallTextStyleGray,),
+                        Padding(
+                          padding: EdgeInsets.only(top:10),
+                          child: Text(
+                            ad.boot.description, style: smallTextStyleGray,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ],
-              ),*/
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FullScreenImageView(images: ad.images)));
-                    },
-                    child:  imagesCarousel(ad.images, BoxFit.cover, 500.0),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: appThemeAdditionalHexColor,
-                  ),
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: appThemeYellowMainColor
-                            ),
-                            child: Text("${ad.boot.price.round()} грн",style: defaultTextStyleBlack,),
-                          ),
-                          Expanded(child: Container()),
-                          if(!isArchive) Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: !isUserAd ? IconButton(
-                              icon: Icon(Icons.favorite, color: isFavorite ? Colors.red : Colors.white, size: 40,),
-                              onPressed: () {
-                                isFavorite ? fs.removeFavoriteProduct(ad.key) : fs.addNewFavoriteProduct(ad.key);
-                                setState(() {
-                                  isFavorite=!isFavorite;
-                                });
-                              },
-                            ) :
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditPage(ad: ad)));
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top:10),
-                        child: Text(ad.boot.modelName,style: bigTextStyle,),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                              child:  Column(
-                                children: [
-                                  Text(ad.boot.size.toString(), style: TextStyle(color: appThemeBlueMainColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                                  Text(SizeType[ad.boot.sizeType],style: smallTextStyle,),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                              child:  Column(
-                                children: [
-                                  Text(ad.boot.height.toString(), style: defaultTextStyle,),
-                                  Text("Довжина / см", style: smallTextStyle,),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                              child:  Column(
-                                children: [
-                                  Text(ad.boot.width.toString(), style: defaultTextStyle,),
-                                  Text("Ширина / см", style: smallTextStyle,),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(),
-                            )
-                          ],
-                        ),
-                      ),
-                      Text("Матеріал: ${ad.boot.material}", style: smallTextStyleGray,),
-                      Padding(
-                        padding: EdgeInsets.only(top:10),
-                        child: Text(
-                          ad.boot.description, style: smallTextStyleGray,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(10),
-        height: 120,
-        child: !isUserAd ? Center(
-          child: userDataLoad ? Row(
-            children: [
-              Container(
-                width: 100,
-                padding: EdgeInsets.all(15),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Text(_userData.name, style: defaultTextStyle),
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.all(10),
+          height: 120,
+          child: !isUserAd ? Center(
+            child: userDataLoad ? Row(
+              children: [
+                Container(
+                  width: 100,
+                  padding: EdgeInsets.all(15),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
                   ),
-                  Text(_userData.city, style: smallTextStyle),
-                ],
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              IconButton(
-                icon: Icon(Icons.call),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 5),
+                      child: Text(_userData.name, style: defaultTextStyle),
+                    ),
+                    Text(_userData.city, style: smallTextStyle),
+                  ],
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.call),
+                  onPressed: (){
+                    launch("tel:${_userData.phoneNumber}");
+                  },
+                )
+              ],
+            ) : Container(
+              child: CircularProgressIndicator()
+            ),
+          ) : Center(
+            child: SizedBox(
+              height: 45.0,
+              width: MediaQuery.of(context).size.width-40,
+              child: !isArchive ? FlatButton(
                 onPressed: (){
-                  launch("tel:${_userData.phoneNumber}");
-                },
-              )
-            ],
-          ) : Container(
-            child: CircularProgressIndicator()
-          ),
-        ) : Center(
-          child: SizedBox(
-            height: 45.0,
-            width: MediaQuery.of(context).size.width-40,
-            child: !isArchive ? FlatButton(
-              onPressed: (){
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context){
-                    return AlertDialog(
-                      backgroundColor: appThemeAdditionalHexColor,
-                      title: Container(padding: EdgeInsets.all(20),child: Text("Ви впевнені, що хочете видалити?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
-                      content: Container(
-                        padding: EdgeInsets.only(top:20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50)
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context){
+                      return AlertDialog(
+                        backgroundColor: appThemeAdditionalHexColor,
+                        title: Container(padding: EdgeInsets.all(20),child: Text("Ви впевнені, що хочете видалити?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
+                        content: Container(
+                          padding: EdgeInsets.only(top:20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50)
+                                ),
+                                child: FlatButton(
+                                  child: Text('Ні',style: defaultTextStyle,),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                  padding: EdgeInsets.all(8.0),
+                                  color: appThemeBlueMainColor,
+                                ),
                               ),
-                              child: FlatButton(
-                                child: Text('Ні',style: defaultTextStyle,),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                padding: EdgeInsets.all(8.0),
-                                color: appThemeBlueMainColor,
+                              Container(
+                                width: 150,
+                                child: FlatButton(
+                                  child: Text('Так',style: defaultTextStyle,),
+                                  onPressed: () {
+                                    fs.addAdToArchive(ad);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+                                  },
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                  padding: EdgeInsets.all(8.0),
+                                  color: appThemeBlueMainColor,
+                                ),
                               ),
-                            ),
-                            Container(
-                              width: 150,
-                              child: FlatButton(
-                                child: Text('Так',style: defaultTextStyle,),
-                                onPressed: () {
-                                  fs.addAdToArchive(ad);
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                                },
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                padding: EdgeInsets.all(8.0),
-                                color: appThemeBlueMainColor,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                );
-              },
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              child: Text('Видалити оголшення', style: defaultTextStyle),
-              padding: EdgeInsets.all(8.0),
-              color: appThemeBlueMainColor,
-            ) : Container(),
+                      );
+                    }
+                  );
+                },
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                child: Text('Видалити оголшення', style: defaultTextStyle),
+                padding: EdgeInsets.all(8.0),
+                color: appThemeBlueMainColor,
+              ) : Container(),
+            ),
           ),
         ),
+        backgroundColor: appThemeBackgroundHexColor,
       ),
-      backgroundColor: appThemeBackgroundHexColor,
     );
   }
 

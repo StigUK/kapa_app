@@ -2,18 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kapa_app/Core/hexColor.dart';
-import 'package:kapa_app/Models/User.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/MainPage/Pages/UserAds.dart';
-import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/AllBootsList.dart';
+import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/AllBootsList.dart';  //WTF?
 import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/Favorites.dart';
 import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -26,6 +27,7 @@ class MainPageState extends State<MainPage> {
   final Firestore _db = Firestore.instance;
   AuthService authService = AuthService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging();
   FirestoreService fs = FirestoreService();
   final tabs = [
     AllBootsListView(),
@@ -38,6 +40,14 @@ class MainPageState extends State<MainPage> {
   bool userDataExis = false;
   int _currentIndex=0;
   int _previousIndex = 0;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _messaging.getToken().then((value) => fs.setUserNotificationToken(value));
+  }
 
   @override
   Widget build(BuildContext context) {

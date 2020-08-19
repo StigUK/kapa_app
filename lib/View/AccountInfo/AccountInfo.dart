@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Models/userinfo.dart';
 import 'package:kapa_app/Resources/colors.dart';
+import 'package:kapa_app/Resources/strings.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
@@ -131,4 +133,4 @@ class _AccountInfoState extends State<AccountInfo> {
       });
     });
   }
-}
+  }
