@@ -15,6 +15,7 @@ Widget AdItem(Ad _ad, size)
           color: appThemeAdditionalHexColor,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
+        height: size.width*0.35,
         width: size.width,
         child: Row(
           children: [
@@ -22,7 +23,7 @@ Widget AdItem(Ad _ad, size)
             Container(
               child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(_ad.images.first, width: size.width/3.5, height: size.width/3.5, fit: BoxFit.cover,),
+              child: Image.network(_ad.images.first, width: size.width*0.35, height: size.width*0.35, fit: BoxFit.cover,),
               ),
             ),
             //Boot info
@@ -37,41 +38,49 @@ Widget AdItem(Ad _ad, size)
                       padding: EdgeInsets.only(top: 5),
                       child: Text("Розміри стопи:", style: smallTextStyle,),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(5),
-                            child:  Column(
-                              children: [
-                                Text(_ad.boot.size.toString(), style: TextStyle(color: appThemeBlueMainColor, fontSize: 25, fontWeight: FontWeight.bold),),
-                                Text(SizeType[_ad.boot.sizeType],style: smallTextStyle,),
-                              ],
+                    Expanded(
+                      child: Container(),
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(size.width*0.008),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(size.width*0.005),
+                              child:  Column(
+                                children: [
+                                  Text(_ad.boot.size.toString(), style: TextStyle(color: appThemeBlueMainColor, fontSize: 21, fontWeight: FontWeight.bold),),
+                                  Text(SizeType[_ad.boot.sizeType],style: smallTextStyle,),
+                                ],
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(5),
-                            child:  Column(
-                              children: [
-                                Text(_ad.boot.height.toString(), style: defaultTextStyle,),
-                                Text("Довжина / см", style: smallTextStyle,),
-                              ],
+                            Padding(
+                              padding: EdgeInsets.all(size.width*0.005),
+                              child:  Column(
+                                children: [
+                                  Text(_ad.boot.height.toString(), style: defaultTextStyle,),
+                                  Text("Довжина / см", style: smallTextStyle,),
+                                ],
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(5),
-                            child:  Column(
-                              children: [
-                                Text(_ad.boot.width.toString(), style: defaultTextStyle,),
-                                Text("Ширина / см", style: smallTextStyle,),
-                              ],
+                            Padding(
+                              padding: EdgeInsets.all(size.width*0.005),
+                              child:  Column(
+                                children: [
+                                  Text(_ad.boot.width.toString(), style: defaultTextStyle,),
+                                  Text("Ширина / см", style: smallTextStyle,),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                    ),
+                    Expanded(
+                      child: Container(),
                     ),
                     Text("Матеріал: ${_ad.boot.material}", style: smallTextStyleGray,),
                   ],

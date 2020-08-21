@@ -60,11 +60,10 @@ class _AllBootsListViewState extends State<AllBootsListView> {
         .size;
     if (!loadData) LoadAdsAndFavorites();
     return Container(
-      height: size.height - 80,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Padding(
+            Container(
               padding: const EdgeInsets.only(left: 10),
               child: Row(
                 children: <Widget>[
@@ -104,8 +103,11 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                             Picker(
                                                 adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(ModelsNames), isArray: true),
                                                 hideHeader: true,
-                                                backgroundColor: appThemeAdditionalSecondHexColor,
+                                                backgroundColor: appThemePickerBackgroundColor,
+                                                containerColor: appThemePickerBackgroundColor,
+                                                textStyle: defaultTextStyle,
                                                 cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+                                                selectedTextStyle: defaultTextStyle,
                                                 confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
                                                 onConfirm: (Picker picker, List value) {
                                                   setFilterState(() {
@@ -133,8 +135,11 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                             Picker(
                                                 adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(BootMaterial), isArray: true),
                                                 hideHeader: true,
-                                                backgroundColor: appThemeAdditionalSecondHexColor,
+                                                backgroundColor: appThemePickerBackgroundColor,
+                                                containerColor: appThemePickerBackgroundColor,
+                                                textStyle: defaultTextStyle,
                                                 cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+                                                selectedTextStyle: defaultTextStyle,
                                                 confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
                                                 onConfirm: (Picker picker, List value) {
                                                   setFilterState(() {
@@ -156,7 +161,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                       Row(
                                         children: [
                                           Container(
-                                              width: 150,
+                                              width: size.width*0.3,
                                               padding: EdgeInsets.only(right: 20, left: 10),
                                               decoration: decorationForContainerWithBorder_bottom,
                                               child: TextField(
@@ -175,7 +180,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                             width: 30,
                                           ),
                                           Container(
-                                              width: 150,
+                                              width: size.width*0.3,
                                               padding: EdgeInsets.only(right: 20, left: 20),
                                               decoration: decorationForContainerWithBorder_bottom,
                                               child: TextField(
@@ -191,14 +196,17 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                               )
                                           ),
                                           Container(
-                                            width: 70,
+                                            width: size.width*0.15,
                                             child: FlatButton(
                                               onPressed: (){
                                                 Picker(
                                                     adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(SizeTypeFull), isArray: true),
                                                     hideHeader: true,
-                                                    backgroundColor: appThemeAdditionalSecondHexColor,
+                                                    backgroundColor: appThemePickerBackgroundColor,
+                                                    containerColor: appThemePickerBackgroundColor,
+                                                    textStyle: defaultTextStyle,
                                                     cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+                                                    selectedTextStyle: defaultTextStyle,
                                                     confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
                                                     onConfirm: (Picker picker, List value) {
                                                       setFilterState(() {
@@ -216,7 +224,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                       Row(
                                         children: [
                                           Container(
-                                              width: 150,
+                                              width: size.width*0.3,
                                               padding: EdgeInsets.only(right: 20, left: 10),
                                               decoration: decorationForContainerWithBorder_bottom,
                                               child: TextField(
@@ -235,7 +243,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                             width: 30,
                                           ),
                                           Container(
-                                              width: 150,
+                                              width: size.width*0.3,
                                               padding: EdgeInsets.only(right: 20, left: 20),
                                               decoration: decorationForContainerWithBorder_bottom,
                                               child: TextField(
@@ -309,52 +317,60 @@ class _AllBootsListViewState extends State<AllBootsListView> {
             ),
             loadData ? Container(
               child: listAds.length > 0 ? SizedBox(
-                height: size.height - 139,
+                height: size.height,
                 child: ListView.builder(
-                  itemCount: listAds.length,
+                  itemCount: listAds.length+1,
                   itemBuilder: (BuildContext context, int i) {
-                    bool isFavorite = false;
-                    favorites.forEach((element) {
-                      if (element == listAds[i].key)
-                        isFavorite = true;
-                    });
-                    return Stack(
-                      children: [
-                        GestureDetector(
-                          child: AdItem(listAds[i], size),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductView(ad: listAds[i],
-                                      isFavorite: isFavorite,)));
-                          },
-                        ),
-                        if(listAds[i].userId != user.uid) Positioned(
-                          top: 20,
-                          child: Container(
-                            child: FlatButton(
-                              onPressed: () {
-                                if(isFavorite)
-                                  {
-                                    favorites.remove(listAds[i].key);
-                                    fs.addNewFavorites(favorites);
-                                  }
-                                else
-                                  {
-                                    fs.addNewFavoriteProduct(listAds[i],favorites);
-                                    favorites.add(listAds[i].key);
-                                  }
-                                setState(() {
-                                  favorites = favorites;
-                                });
-                              },
-                              child: Icon(Icons.favorite, size: 40,
-                                color: isFavorite ? Colors.red : Colors.white,),
+                      if(i!=listAds.length)
+                        {
+                          bool isFavorite = false;
+                          favorites.forEach((element) {
+                            if (element == listAds[i].key)
+                              isFavorite = true;
+                          });
+                          return Container(
+                            child: Stack(
+                              children: [
+                                GestureDetector(
+                                  child: AdItem(listAds[i], size),
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductView(ad: listAds[i],
+                                              isFavorite: isFavorite,)));
+                                  },
+                                ),
+                                if(listAds[i].userId != user.uid) Positioned(
+                                  top: 20,
+                                  child: Container(
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        if(isFavorite)
+                                        {
+                                          favorites.remove(listAds[i].key);
+                                          fs.addNewFavorites(favorites);
+                                        }
+                                        else
+                                        {
+                                          fs.addNewFavoriteProduct(listAds[i],favorites);
+                                          favorites.add(listAds[i].key);
+                                        }
+                                        setState(() {
+                                          favorites = favorites;
+                                        });
+                                      },
+                                      child: Icon(Icons.favorite, size: 40,
+                                        color: isFavorite ? Colors.red : Colors.white,),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ),
-                      ],
-                    );
+                          );
+                        }
+                      else return Container(
+                        height: 150,
+                      );
                   },
                 ),
               ) : Container(
@@ -416,11 +432,11 @@ class _AllBootsListViewState extends State<AllBootsListView> {
 
   bool filterModel(Ad ad){
     if(dataFilter['model']!=null)
-      {
-        if(dataFilter['model'] == ad.boot.modelName)
-          return true;
-        else return false;
-      }
+    {
+      if(dataFilter['model'] == ad.boot.modelName)
+        return true;
+      else return false;
+    }
     return true;
   }
 
@@ -439,15 +455,15 @@ class _AllBootsListViewState extends State<AllBootsListView> {
     {
       double from = dataFilter['sizeF']==null ? 0.0 : dataFilter['sizeF'];
       if(dataFilter['sizeT']!=null)
-        {
-         if(ad.boot.size >= from && ad.boot.size <= dataFilter['sizeT'] && ad.boot.sizeType == dataFilter['sizeType'])
-           return true;
-         else return false;
-        }
+      {
+        if(ad.boot.size >= from && ad.boot.size <= dataFilter['sizeT'] && ad.boot.sizeType == dataFilter['sizeType'])
+          return true;
+        else return false;
+      }
       else
-       if(ad.boot.size >= from && ad.boot.sizeType == dataFilter['sizeType'])
-         return true;
-       else return false;
+      if(ad.boot.size >= from && ad.boot.sizeType == dataFilter['sizeType'])
+        return true;
+      else return false;
     }
     return true;
   }
@@ -502,12 +518,12 @@ class _AllBootsListViewState extends State<AllBootsListView> {
     ///If price From < price To we switch it
     if((dataFilter['priceT']!=null)&&(dataFilter['priceF']!=null))
     {
-        if(dataFilter['priceF']>dataFilter['priceT'])
-          {
-            var temp = dataFilter['priceF'];
-            dataFilter['priceF'] = dataFilter['priceT'];
-            dataFilter['priceT'] = temp;
-          }
+      if(dataFilter['priceF']>dataFilter['priceT'])
+      {
+        var temp = dataFilter['priceF'];
+        dataFilter['priceF'] = dataFilter['priceT'];
+        dataFilter['priceT'] = temp;
+      }
     }
     ///If size From < size To we switch it
     if((dataFilter['sizeT']!=null)&&(dataFilter['sizeF']!=null))

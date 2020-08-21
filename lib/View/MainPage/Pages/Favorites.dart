@@ -21,7 +21,6 @@ class _FavoritesListState extends State<FavoritesList> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     if(!loadData) LoadAdsAndFavorites();
-
     return Container(
       height: size.height,
       child: SingleChildScrollView(
@@ -29,41 +28,44 @@ class _FavoritesListState extends State<FavoritesList> {
           child: listAds.length>0 ? SizedBox(
             height: size.height-84,
             child:  ListView.builder(
-              itemCount: listAds.length,
+              itemCount: listAds.length+1,
               itemBuilder: (BuildContext context, int i)
               {
-                bool isFavorite = false;
-                favorites.forEach((element) {
-                  if(element == listAds[i].key)
-                    isFavorite = true;
-                });
-                return Stack(
-                  children: [
-                    GestureDetector(
-                      child:AdItem(listAds[i], size),
-                      onTap: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listAds[i],isFavorite: isFavorite),));
-                      },
-                    ),
-                    Positioned(
-                      top: 20,
-                      child: Container(
-                        child: FlatButton(
-                          onPressed: () {
-                            favorites.remove(listAds[i].key);
-                            listAds.removeAt(i);
-                            fs.addNewFavorites(favorites);
-                            setState(() {
-                              listAds = listAds;
-                              favorites = favorites;
-                            });
-                          },
-                          child: Icon(Icons.favorite, size: 40, color: isFavorite ? Colors.red : Colors.white,),
+                if(i!=listAds.length){
+                  bool isFavorite = false;
+                  favorites.forEach((element) {
+                    if(element == listAds[i].key)
+                      isFavorite = true;
+                  });
+                  return Stack(
+                    children: [
+                      GestureDetector(
+                        child:AdItem(listAds[i], size),
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listAds[i],isFavorite: isFavorite),));
+                        },
+                      ),
+                      Positioned(
+                        top: 20,
+                        child: Container(
+                          child: FlatButton(
+                            onPressed: () {
+                              favorites.remove(listAds[i].key);
+                              listAds.removeAt(i);
+                              fs.addNewFavorites(favorites);
+                              setState(() {
+                                listAds = listAds;
+                                favorites = favorites;
+                              });
+                            },
+                            child: Icon(Icons.favorite, size: 40, color: isFavorite ? Colors.red : Colors.white,),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
+                    ],
+                  );
+                }
+                else return Container(height: 150,);
               },
             ),
           ) : Container(
@@ -74,7 +76,8 @@ class _FavoritesListState extends State<FavoritesList> {
                 ),
               )
           ),
-        ) : Container(
+        ) :
+        Container(
             child: SizedBox(
               height: size.height-140,
               child: Center(
@@ -95,11 +98,14 @@ class _FavoritesListState extends State<FavoritesList> {
     final List<String> listFavorites = List<String>();
     await _db.collection("favorites").document(user.uid).get().then((value)
     {
-      value.data.forEach((key, value) => listFavorites.add(value));
-      setState(() {
-        favorites = listFavorites;
-      });
-      if(favorites.length==0) loadData = true;
+      if(value.data!=null)
+        {
+          value.data.forEach((key, value) => listFavorites.add(value));
+          setState(() {
+            favorites = listFavorites;
+          });
+        }
+      else setState((){loadData = true;});
     });
     await _db.collection("ads").getDocuments().then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {

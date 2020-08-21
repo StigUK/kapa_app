@@ -10,3 +10,4 @@ Color appThemeAdditionalSecondHexColor = HexColor("#585A5D");
 Color appThemeBlueMainColor = HexColor("#0ccde6");
 Color appThemeBottomAppBarBackground = HexColor("#505051");
 Color appThemeYellowMainColor = HexColor("#FFD600");
+Color appThemePickerBackgroundColor = HexColor('#424242');

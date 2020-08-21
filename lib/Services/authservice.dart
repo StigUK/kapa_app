@@ -70,7 +70,7 @@ class AuthService
 
   signInWithOTP(smsCode, verID)
   {
-    AuthCredential authCredential = PhoneAuthProvider.getCredential(verificationId: verID, smsCode: smsCode);
+    AuthCredential authCredential = PhoneAuthProvider.getCredential(verificationId: verificationID, smsCode: smsCode);
     signInWithCredential(authCredential);
   }
 

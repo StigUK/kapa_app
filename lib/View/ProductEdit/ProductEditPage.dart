@@ -32,7 +32,6 @@ class ProductEditPage extends StatefulWidget {
 class _ProductEditPageState extends State<ProductEditPage> {
 
   _ProductEditPageState({this.ad});
-
   var size;
   //Boots temp Data
   double bootWidth=0;
@@ -217,7 +216,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     maxLines: 1,
                   )
               ),
-              showErrorText(error),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: showErrorText(error),
+              )
+
             ],
           ),
         ),
@@ -257,8 +260,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
       child: Row(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: 40, right: 40),
-            child: Image.asset('assets/images/ProductEditPage/sneaker.png', height: (size.width-20)/2.2),
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: Image.asset('assets/images/ProductEditPage/sneaker.png', width: (size.width*0.2)),
           ),
           Expanded(
             child: Column(
@@ -468,8 +471,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
       Picker(
           adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(setSizesArray(bootSizeType)), isArray: true),
           hideHeader: true,
-          backgroundColor: appThemeAdditionalSecondHexColor,
+          backgroundColor: appThemePickerBackgroundColor,
+          containerColor: appThemePickerBackgroundColor,
+          textStyle: defaultTextStyle,
           cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+          selectedTextStyle: defaultTextStyle,
           confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
           onConfirm: (Picker picker, List value) {
             setState(() {
@@ -483,10 +489,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
   {
     Picker(
         adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
-        textStyle: smallTextStyle,
         hideHeader: true,
-        backgroundColor: appThemeAdditionalHexColor,
+        backgroundColor: appThemePickerBackgroundColor,
+        containerColor: appThemePickerBackgroundColor,
+        textStyle: defaultTextStyle,
         cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+        selectedTextStyle: defaultTextStyle,
         confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
         onConfirm: (Picker picker, List value) {
           setState(() {

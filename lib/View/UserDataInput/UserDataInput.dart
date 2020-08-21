@@ -36,9 +36,9 @@ class _UserDataInputState extends State<UserDataInput> {
       onWillPop: () async{
         return false;
       },
-      child: SingleChildScrollView(
-        child: Scaffold(
-          body: Container(
+      child:  Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
             padding: EdgeInsets.only(top: 100),
             child: Center(
               child: Column(
@@ -56,24 +56,24 @@ class _UserDataInputState extends State<UserDataInput> {
               ),
             ),
           ),
-          backgroundColor: appThemeBackgroundHexColor,
-          bottomNavigationBar: Container(
-            padding: EdgeInsets.all(20),
-            child: SizedBox(
-              height: 50.0,
-              width: MediaQuery.of(context).size.width,
-              child: RaisedButton(onPressed: (){
-                SendDataToFirestore();
-              },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                child: Text('Готово', style: defaultTextStyle,),
-                padding: EdgeInsets.all(8.0),
-                color: appThemeBlueMainColor,
-              ),
+        ),
+        backgroundColor: appThemeBackgroundHexColor,
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.all(20),
+          child: SizedBox(
+            height: 50.0,
+            width: MediaQuery.of(context).size.width,
+            child: RaisedButton(onPressed: (){
+              SendDataToFirestore();
+            },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              child: Text('Готово', style: defaultTextStyle,),
+              padding: EdgeInsets.all(8.0),
+              color: appThemeBlueMainColor,
             ),
           ),
         ),
-      )
+      ),
     );
   }
 

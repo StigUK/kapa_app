@@ -82,7 +82,7 @@ class _ProductViewState extends State<ProductView> {
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => FullScreenImageView(images: ad.images)));
                       },
-                      child:  imagesCarousel(ad.images, BoxFit.cover, 500.0),
+                      child:  imagesCarousel(ad.images, BoxFit.cover, size.width),
                     ),
                   ),
                   Container(
@@ -184,28 +184,37 @@ class _ProductViewState extends State<ProductView> {
         ),
         bottomNavigationBar: Container(
           padding: EdgeInsets.all(10),
-          height: 120,
+          height: size.height*0.12,
           child: !isUserAd ? Center(
             child: userDataLoad ? Row(
               children: [
-                Container(
-                  width: 100,
-                  padding: EdgeInsets.all(15),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Container(
+                    height: size.height*0.12-20,
+                    width: size.height*0.12-20,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
+                        )
+                    ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 5),
-                      child: Text(_userData.name, style: defaultTextStyle),
-                    ),
-                    Text(_userData.city, style: smallTextStyle),
-                  ],
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(_userData.name, style: defaultTextStyle),
+                      ),
+                      Text(_userData.city, style: smallTextStyle),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: Container(),

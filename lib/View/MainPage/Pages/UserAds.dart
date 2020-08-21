@@ -48,7 +48,7 @@ class _UserAdsPageState extends State<UserAdsPage> {
                         indicatorHeight: 40
                     ),
                     tabs: [
-                      Tab(child: Container(child: Text("Актвині", style: defaultTextStyle))),
+                      Tab(child: Container(child: Text("Активині", style: defaultTextStyle))),
                       Tab(child: Container(child: Text("Архів", style: defaultTextStyle))),
                     ],
                   ),
@@ -83,7 +83,7 @@ class _UserAdsPageState extends State<UserAdsPage> {
             },
           ),
         ),
-      ) : Center(child: Text("У вас поки немає активних оголошень", style: defaultTextStyle))
+      ) : Center(child: Text("У вас поки немає активних оголошень", style: defaultTextStyle, textAlign: TextAlign.center,))
     ) : Center(child: CircularProgressIndicator());
   }
 
@@ -97,16 +97,38 @@ class _UserAdsPageState extends State<UserAdsPage> {
             itemCount: listArchiveAds.length,
             itemBuilder: (BuildContext context, int i)
             {
-              return GestureDetector(
-                child: AdItem(listArchiveAds[i], size),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listArchiveAds[i],isFavorite: true),));
-                },
+              return Stack(
+                children: [
+                GestureDetector(
+                  child: AdItem(listArchiveAds[i], size),
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listArchiveAds[i],isFavorite: true),));
+                  },
+                  ),
+                  Positioned(
+                    left: 20,
+                    top: 20,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: appThemeAdditionalHexColor.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      width: size.width*0.35-20,
+                      height: size.width*0.05,
+                      child: Center(
+                        child: Text(
+                            "Продано",
+                            style: defaultTextStyle
+                        ),
+                      )
+                    ),
+                  ),
+                ],
               );
             },
           ),
         ),
-      ) : Center(child: Text("У вас поки немає архівованих оголошень", style: defaultTextStyle))
+      ) : Center(child: Text("У вас поки немає архівованих оголошень", style: defaultTextStyle, textAlign: TextAlign.center,))
     ) : Center(child: CircularProgressIndicator());
   }
 
