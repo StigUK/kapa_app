@@ -141,6 +141,11 @@ class FirestoreService
     );
   }
 
+  deleteNotificationToken()async{
+    final FirebaseUser user = await _auth.currentUser();
+    await _db.collection('userToken').document(user.uid).setData(null);
+  }
+
   getUserNotificationTokens(String uid)
   async{
     List<String> tokens = List<String>();

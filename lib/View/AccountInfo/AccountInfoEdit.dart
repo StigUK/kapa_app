@@ -48,54 +48,58 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
 
   var size;
 
+  bool initialized = false;
+
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    initializingData();
+    if(!initialized) initializingData();
     return Scaffold(
       backgroundColor: appThemeBackgroundHexColor,
       appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.all(5),
-        child:  Column(
-          children: [
-            //Image and name
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: image !=null ? NetworkImage(image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
-                      ),
-                      CircleAvatar(
-                          child: FlatButton(
-                            onPressed: (){
-                              uploadPic();
-                            },
-                            child: Container(),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(5),
+          child:  Column(
+            children: [
+              //Image and name
+              Row(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundImage: image !=null ? NetworkImage(image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
                           ),
-                          backgroundImage: AssetImage("assets/images/ProductEditPage/Photo.png"),
-                      ),
-                    ],
-                  )
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child:  Text("Змінити фото", style: defaultTextStyle),
+                          CircleAvatar(
+                            child: FlatButton(
+                              onPressed: (){
+                                uploadPic();
+                              },
+                              child: Container(),
+                            ),
+                            backgroundImage: AssetImage("assets/images/ProductEditPage/Photo.png"),
+                          ),
+                        ],
+                      )
                   ),
-                ),
-              ],
-            ),
-            dataInputForm(),
-          ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 5),
+                      child:  Text("Змінити фото", style: defaultTextStyle),
+                    ),
+                  ),
+                ],
+              ),
+              dataInputForm(),
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 
@@ -185,6 +189,7 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
     numberTEC.text = number;
     nameTEC.text = name;
     cityTEC.text = city;
+    initialized = true;
   }
 
   SendDataToFirestore()

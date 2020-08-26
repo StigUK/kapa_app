@@ -3,7 +3,6 @@
 ///   He will be redirected on this page.
 ///
 
-
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Core/TextAreaValidator.dart';
 import 'package:kapa_app/Models/userinfo.dart';
@@ -13,6 +12,7 @@ import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/LoginPage/Widgets/PictureWithText.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDataInput extends StatefulWidget {
   @override
@@ -23,15 +23,20 @@ class _UserDataInputState extends State<UserDataInput> {
 
   GlobalKey<FormState> _key = GlobalKey();
   bool _validate = false;
+  bool dataLoaded = false;
+
 
   TextEditingController nameTEC = TextEditingController();
   TextEditingController cityTEC = TextEditingController();
   TextEditingController numberTEC = TextEditingController();
+  String photoURL;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   AuthService authService = new AuthService();
 
   @override
   Widget build(BuildContext context) {
+    if(!dataLoaded) getDataFromFirestore();
     return WillPopScope(
       onWillPop: () async{
         return false;
@@ -80,7 +85,7 @@ class _UserDataInputState extends State<UserDataInput> {
   Widget dataInputForm()
   {
     return Form(
-       key: _key,
+      key: _key,
       autovalidate: _validate,
       child: Column(
         children: [
@@ -140,12 +145,32 @@ class _UserDataInputState extends State<UserDataInput> {
     );
   }
 
+  getDataFromFirestore() async{
+    print("AGAIN");
+    print(dataLoaded);
+    final FirebaseUser user = await _auth.currentUser();
+    print("Number:");
+    print(user.phoneNumber);
+    print("Name:");
+    print(user.displayName);
+    print("Number:");
+    print(user.isEmailVerified);
+    setState(() {
+      print("SET STATE");
+      numberTEC.text = user.phoneNumber;
+      nameTEC.text = user.displayName;
+      photoURL = user.photoUrl;
+      dataLoaded = true;
+      print(dataLoaded);
+    });
+  }
+
   SendDataToFirestore()
   {
     if(_key.currentState.validate())
     {
       FirestoreService fs = FirestoreService();
-      UserData userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text);
+      UserData userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text, image: photoURL);
       fs.setUserInfo(userData);
       Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
     }

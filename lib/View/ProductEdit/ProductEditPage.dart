@@ -449,6 +449,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   Widget stackImage(int index)
   {
+    if(images[index]!=null)
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -462,6 +463,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
           },
           child: Image.asset("assets/images/ProductEditPage/close.png", width: 40),
         )
+      ],
+    );
+    else return Stack(
+      alignment: Alignment.center,
+      children: [
+        CircularProgressIndicator(),
       ],
     );
   }
@@ -588,17 +595,27 @@ class _ProductEditPageState extends State<ProductEditPage> {
     File image;
     try {
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        images.add(null);
+      });
     } on PlatformException catch (e) {
       return null;
     }
-    StorageReference reference = _storage.ref().child(image.path.split('/').last);
-    String filePath = 'images/$uniqAd/${DateTime.now()}.png';
-    StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    String url = await taskSnapshot.ref.getDownloadURL();
-    setState(() {
-      images.add(url);
-      print(url);
-    });
+    if(image!=null)
+    {
+        StorageReference reference = _storage.ref().child(image.path.split('/').last);
+        String filePath = 'images/$uniqAd/${DateTime.now()}.png';
+        StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
+        print("HERE");
+        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+        String url = await taskSnapshot.ref.getDownloadURL();
+        setState(() {
+          images.last = url;
+          print(url);
+        });
+    }
+    else{
+
+    }
   }
 }

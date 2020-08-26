@@ -2,19 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/MainPage/Pages/UserAds.dart';
-import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/AllBootsList.dart';  //WTF?
-import 'file:///C:/Users/Administrator/Documents/AndroidStudioPojects/kapa_app/lib/View/MainPage/Pages/Favorites.dart';
+import 'package:kapa_app/View/MainPage/Pages/AllBootsList.dart';
+import 'package:kapa_app/View/MainPage/Pages/Favorites.dart';
 import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -46,6 +44,7 @@ class MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    _messaging.deleteInstanceID();
     _messaging.getToken().then((value) => fs.setUserNotificationToken(value));
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -79,6 +78,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     if (!userDataExis) checkUserDataExist();
     return WillPopScope(
@@ -116,27 +116,21 @@ class MainPageState extends State<MainPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
             decoration: BoxDecoration(
-              border: Border.all(color:  appThemeBottomAppBarBackground, width: 5),
-              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: AssetImage("assets/images/MainPage/Rhombus.png"),
+              )
             ),
-            height: 65.0,
-            width: 65.0,
-            child: FittedBox(
-              child: FloatingActionButton(
-                backgroundColor: appThemeBlueMainColor,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
-                  );
-                },
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                // elevation: 5.0,
-              ),
-            ),
+            width: size.width*0.2,
+            height: size.width*0.2,
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
+                );
+              },
+              child: Icon(Icons.add),
+            )
           ),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: appThemeBottomAppBarBackground,
@@ -144,19 +138,19 @@ class MainPageState extends State<MainPage> {
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(icon: Icon(Icons.border_all),
-                  title: Text("")
+                  title: Container(),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.rowing),
-                  title: Text("")
+                  title: Container(),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
                   title: Text(""),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.favorite),
-                  title: Text("")
+                  title: Container(),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.settings),
-                title: Text(""),
+                title: Container(),
               ),
             ],
             onTap: (index){
@@ -183,6 +177,14 @@ class MainPageState extends State<MainPage> {
       setState(() {
         userDataExis = true;
       });
-    else Navigator.push(context, MaterialPageRoute(builder: (context) => UserDataInput()),);
+    else{
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => UserDataInput(),
+        ),
+            (route) => false,
+      );
+    }
   }
 }

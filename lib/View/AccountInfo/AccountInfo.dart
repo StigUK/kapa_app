@@ -101,6 +101,8 @@ class _AccountInfoState extends State<AccountInfo> {
               height: 50.0,
               width: MediaQuery.of(context).size.width,
               child: RaisedButton(onPressed: (){
+                FirestoreService fs = FirestoreService();
+                fs.deleteNotificationToken();
                 AuthService authService = AuthService();
                 authService.signOut();
                 Navigator.push(
