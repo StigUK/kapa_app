@@ -11,7 +11,6 @@ import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
-import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class AccountInfoEdit extends StatefulWidget {
 
