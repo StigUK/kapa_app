@@ -44,7 +44,7 @@ class MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _messaging.deleteInstanceID();
+    //_messaging.deleteInstanceID();
     _messaging.getToken().then((value) => fs.setUserNotificationToken(value));
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -137,10 +137,10 @@ class MainPageState extends State<MainPage> {
             currentIndex: _currentIndex,
             type: BottomNavigationBarType.fixed,
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.border_all),
+              BottomNavigationBarItem(icon: Icon(const IconData(0xe901, fontFamily: 'kopa')),
                   title: Container(),
               ),
-              BottomNavigationBarItem(icon: Icon(Icons.rowing),
+              BottomNavigationBarItem(icon: Icon(const IconData(0xe902, fontFamily: 'kopa')),
                   title: Container(),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.brightness_1),

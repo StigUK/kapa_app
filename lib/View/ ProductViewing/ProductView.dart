@@ -19,11 +19,12 @@ class ProductView extends StatefulWidget {
 
   Ad ad;
   bool isFavorite;
-  ProductView({this.ad, this.isFavorite});
+  List<String> favorites;
+  ProductView({this.ad, this.isFavorite, this.favorites});
   @override
   _ProductViewState createState()
   {
-   return _ProductViewState(ad:ad, isFavorite: isFavorite);
+   return _ProductViewState(ad:ad, isFavorite: isFavorite, favorites: favorites);
   }
 }
 
@@ -31,7 +32,8 @@ class _ProductViewState extends State<ProductView> {
 
   Ad ad;
   bool isFavorite;
-  _ProductViewState({this.ad, this.isFavorite});
+  List<String> favorites;
+  _ProductViewState({this.ad, this.isFavorite, this.favorites});
   var size;
   UserData _userData;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -63,19 +65,6 @@ class _ProductViewState extends State<ProductView> {
               ),
               child: Column(
                 children: [
-                  /*Stack(
-                  children: [
-                    imagesCarousel(),
-                    Positioned(
-                      child: FlatButton(
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
-                        child: Icon(Icons.arrow_back_ios),
-                      ),
-                    ),
-                  ],
-                ),*/
                   Padding(
                     padding: EdgeInsets.only(bottom: 10),
                     child: GestureDetector(
@@ -109,7 +98,7 @@ class _ProductViewState extends State<ProductView> {
                               child: !isUserAd ? IconButton(
                                 icon: Icon(Icons.favorite, color: isFavorite ? Colors.red : Colors.white, size: 40,),
                                 onPressed: () {
-                                  isFavorite ? fs.removeFavoriteProduct(ad.key) : fs.addNewFavoriteProduct(ad,null);
+                                  isFavorite ? deleteFavorite() : addFavorite();
                                   setState(() {
                                     isFavorite=!isFavorite;
                                   });
@@ -292,6 +281,19 @@ class _ProductViewState extends State<ProductView> {
         backgroundColor: appThemeBackgroundHexColor,
       ),
     );
+  }
+
+  addFavorite()
+  {
+    fs.sendNotification(ad);
+    favorites.add(ad.key);
+    fs.addNewFavorites(favorites);
+  }
+
+  deleteFavorite()
+  {
+    favorites.remove(ad.key);
+    fs.addNewFavorites(favorites);
   }
 
   getUserData()

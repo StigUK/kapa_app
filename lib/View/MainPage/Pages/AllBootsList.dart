@@ -52,9 +52,10 @@ class _AllBootsListViewState extends State<AllBootsListView> {
   TextEditingController sizeF = TextEditingController();
   TextEditingController sizeT = TextEditingController();
 
+  FirestoreService fs = FirestoreService();
+
   @override
   Widget build(BuildContext context) {
-    FirestoreService fs = FirestoreService();
     size = MediaQuery
         .of(context)
         .size;
@@ -69,10 +70,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                 children: <Widget>[
                   IconButton(
                     alignment: Alignment.bottomLeft,
-                    icon: Icon(
-                      Icons.filter_list,
-                      color: Colors.white,
-                    ),
+                    icon: Icon(const IconData(0xe900, fontFamily: 'kopa')),
                     onPressed: () {
                       showModalBottomSheet(
                           context: context,
@@ -337,7 +335,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                     Navigator.push(context, MaterialPageRoute(
                                         builder: (context) =>
                                             ProductView(ad: listAds[i],
-                                              isFavorite: isFavorite,)));
+                                              isFavorite: isFavorite, favorites: favorites,)));
                                   },
                                 ),
                                 if(listAds[i].userId != user.uid) Positioned(
@@ -346,18 +344,9 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                     child: FlatButton(
                                       onPressed: () {
                                         if(isFavorite)
-                                        {
-                                          favorites.remove(listAds[i].key);
-                                          fs.addNewFavorites(favorites);
-                                        }
+                                          deleteFavorite(listAds[i]);
                                         else
-                                        {
-                                          fs.addNewFavoriteProduct(listAds[i],favorites);
-                                          favorites.add(listAds[i].key);
-                                        }
-                                        setState(() {
-                                          favorites = favorites;
-                                        });
+                                          addFavorite(listAds[i]);
                                       },
                                       child: Icon(Icons.favorite, size: 40,
                                         color: isFavorite ? Colors.red : Colors.white,),
@@ -415,10 +404,13 @@ class _AllBootsListViewState extends State<AllBootsListView> {
       });
     });
     await _db.collection("favorites").document(user.uid).get().then((value) {
-      value.data.forEach((key, value) => listFavorites.add(value));
-      setState(() {
-        favorites = listFavorites;
-      });
+      if(value.data!=null)
+        {
+          value.data.forEach((key, value) => listFavorites.add(value));
+          setState(() {
+            favorites = listFavorites;
+          });
+        }
     });
   }
 
@@ -554,4 +546,24 @@ class _AllBootsListViewState extends State<AllBootsListView> {
     priceT = TextEditingController(text: dataFilter['priceT']!=null ? dataFilter['priceT'].toString() : "");
     initialized = true;
   }
+
+  addFavorite(Ad ad)
+  {
+    fs.sendNotification(ad);
+    favorites.add(ad.key);
+    fs.addNewFavorites(favorites);
+    setState(() {
+      favorites = favorites;
+    });
+  }
+
+  deleteFavorite(Ad ad)
+  {
+    favorites.add(ad.key);
+    fs.addNewFavorites(favorites);
+    setState(() {
+      favorites = favorites;
+    });
+  }
+
 }

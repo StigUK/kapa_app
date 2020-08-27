@@ -58,6 +58,13 @@ class AuthService
   {
     _auth.signOut();
     signOutGoogle();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginScreen(),
+      ),
+          (route) => false,
+    );
   }
 
   signInWithCredential(AuthCredential authCredential)
@@ -168,7 +175,6 @@ class AuthService
 
   void signOutGoogle() async {
     await googleSignIn.signOut();
-
     print("User Sign Out");
   }
 }

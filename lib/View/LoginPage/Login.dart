@@ -148,7 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width,
                     child: RaisedButton(onPressed: (){
                       // ignore: unnecessary_statements
-                      print("CODE SEND? "+codeSend.toString());
                       codeSend ? loginWithOTP() : sendSMScode();
                     }, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                     child: Text('Верифікувати', style: TextStyle(color: Colors.white)),
@@ -184,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   loginWithOTP(){
-    print("Send code: "+codeTEC.text);
     authService.signInWithOTP(codeTEC.text, verificationID);
   }
 

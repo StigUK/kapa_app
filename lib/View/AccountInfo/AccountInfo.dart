@@ -105,10 +105,6 @@ class _AccountInfoState extends State<AccountInfo> {
                 fs.deleteNotificationToken();
                 AuthService authService = AuthService();
                 authService.signOut();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
               },
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 child: Text('Вийти', style: defaultTextStyle),
