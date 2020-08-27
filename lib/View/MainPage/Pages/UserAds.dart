@@ -48,7 +48,7 @@ class _UserAdsPageState extends State<UserAdsPage> {
                         indicatorHeight: 40
                     ),
                     tabs: [
-                      Tab(child: Container(child: Text("Активині", style: defaultTextStyle))),
+                      Tab(child: Container(child: Text("Активні", style: defaultTextStyle))),
                       Tab(child: Container(child: Text("Архів", style: defaultTextStyle))),
                     ],
                   ),

@@ -236,7 +236,7 @@ class _ProductViewState extends State<ProductView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: 150,
+                                width: size.width*0.3,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50)
                                 ),
@@ -251,7 +251,7 @@ class _ProductViewState extends State<ProductView> {
                                 ),
                               ),
                               Container(
-                                width: 150,
+                                width: size.width*0.3,
                                 child: FlatButton(
                                   child: Text('Так',style: defaultTextStyle,),
                                   onPressed: () {
@@ -271,7 +271,7 @@ class _ProductViewState extends State<ProductView> {
                   );
                 },
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                child: Text('Видалити оголшення', style: defaultTextStyle),
+                child: Text('Видалити оголошення', style: defaultTextStyle),
                 padding: EdgeInsets.all(8.0),
                 color: appThemeBlueMainColor,
               ) : Container(),

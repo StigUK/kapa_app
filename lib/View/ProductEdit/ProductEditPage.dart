@@ -84,7 +84,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    width: 100,
+                                    width: size.width*0.2,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(50)
                                     ),
@@ -99,7 +99,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                     ),
                                   ),
                                   Container(
-                                    width: 100,
+                                    width: size.width*0.2,
                                     child: FlatButton(
                                       child: Text('Так',style: defaultTextStyle,),
                                       onPressed: () {

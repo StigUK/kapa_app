@@ -43,18 +43,19 @@ class _AccountInfoState extends State<AccountInfo> {
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: CircleAvatar(
-                  radius: 60,
+                  radius: size.width*0.11,
                   backgroundImage: _userData.image!=null ? NetworkImage(_userData.image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 5),
-                  child:  Text(_userData.name, style: bigTextStyle,),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 5),
+                    child:  Text(_userData.name, style: bigTextStyle,),
+                  ),
                 ),
               ),
-              Expanded(child: Container(),),
               FlatButton(
                 onPressed: (){
                   Navigator.push(
