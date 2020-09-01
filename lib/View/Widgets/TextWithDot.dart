@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 
 Widget TextWithDot(String text)
@@ -11,7 +12,7 @@ Widget TextWithDot(String text)
       children: <Widget>[
         Icon(
           Icons.brightness_1,
-          color: Colors.blue,
+          color: appThemeBlueMainColor,
           size: 10.0,
         ),
         SizedBox(width: 10.0),

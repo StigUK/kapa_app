@@ -5,9 +5,33 @@ import 'colors.dart';
 
 const defaultTextStyle = TextStyle(
   color: defaultTextColor,
-  fontSize: 20,
+  fontSize: 18,
 );
 
+const defaultTextStyleBlack = TextStyle(
+  color: Colors.black,
+  fontSize: 18.0,
+);
+
+const bigTextStyle = TextStyle(
+  color: defaultTextColor,
+  fontSize: 28.0,
+);
+
+const smallTextStyle = TextStyle(
+  color: defaultTextColor,
+  fontSize: 11.0,
+);
+
+const smallTextStyleGray = TextStyle(
+  color: defaultGrayTextColor,
+  fontSize: 11.0,
+);
+
+const dialogTitleTextStyle = TextStyle(
+  color: defaultTextColor,
+  fontSize: 23.0,
+);
 
 // ignore: non_constant_identifier_names
 final decorationForContainerWithBorder_bottom = BoxDecoration(
@@ -18,5 +42,4 @@ final decorationForContainerWithBorder_bottom = BoxDecoration(
   ),
 );
 const decorationForContainerWithBorder_left = BoxDecoration(
-
 );

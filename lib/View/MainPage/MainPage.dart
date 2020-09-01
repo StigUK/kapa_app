@@ -55,6 +55,25 @@ class MainPageState extends State<MainPage> {
                   ],
                 ),
               ),
+              /*Padding(
+                padding: EdgeInsets.only(top: 0),
+                child: SizedBox(
+                  height: 50.0,
+                  width: MediaQuery.of(context).size.width,
+                  child: RaisedButton(onPressed: (){
+                   signOut();
+                  },
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    child: Text('SignOut', style: TextStyle(color: Colors.white),),
+                    padding: EdgeInsets.all(8.0),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 150, 0, 50),
+                child:  Image.asset('assets/images/LoginPage/Shape-18-copy-30.png', height: 373.0,),
+              ),*/
             ],
           ),
         ),

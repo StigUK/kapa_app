@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 
+import 'Resources/colors.dart';
+
 void main() {
   runApp(Main());
 }
 
 class Main extends StatelessWidget {
-
-  //AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
+    AuthService authService = AuthService();
+    authService.context = context;
     return MaterialApp(
       title: 'Kapa',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           colorScheme: ColorScheme.dark(),
+          accentColor: appThemeBlueMainColor,
           textTheme: TextTheme(
             bodyText2: TextStyle(
               color: Colors.white,
@@ -25,7 +28,7 @@ class Main extends StatelessWidget {
             ),
           ),
       ),
-      home: AuthService().handleAuth(),
+      home: authService.handleAuth(),
       //home: LoginScreen(),
       /*localizationsDelegates: [
         AppLoc.delegate

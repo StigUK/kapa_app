@@ -25,9 +25,19 @@ dependencies:
     sdk: flutter
   firebase_auth: ^0.16.1
   firebase_core: ^0.4.5
+  firebase_storage: ^3.1.6
   flutter_picker: ^1.1.5
+  image_picker: ^0.6.7+4
+  google_sign_in: ^4.5.1
   cloud_firestore: ^0.13.7
-  flutter_webview_plugin: ^0.3.10+1
+  carousel_pro: ^1.0.0
+  flutter_webview_plugin: ^0.3.11
+  carousel_slider: ^2.2.1
+  url_launcher: ^5.5.0
+  bubble_tab_indicator: ^0.1.4
+  pull_to_refresh: ^1.6.1
+  firebase_messaging: ^6.0.16
+  flutter_launcher_icons: ^0.7.5
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
@@ -36,6 +46,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -66,15 +80,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
+
+  fonts:
+    - family: kopa
+      fonts:
+        - asset: assets/fonts/kopaicons.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
