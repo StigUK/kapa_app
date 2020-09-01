@@ -9,7 +9,8 @@ validateTextArea(String value)
 
 String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
-  if(RegExp(r"^\+?3?8?(0[5-9][0-9]\d{7})$").hasMatch(value))
+  if (value.length != 13)
+    return 'Введіть корректний номер телефону';
+  else
     return null;
-  else return 'Введіть корректний номер телефону в форматі +380-xx-yyy-zzzz';
 }

@@ -1,132 +1,190 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kapa_app/Core/hexColor.dart';
-import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Services/authservice.dart';
+import 'package:kapa_app/Services/firestoreService.dart';
+import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
+import 'package:kapa_app/View/MainPage/Pages/UserAds.dart';
+import 'package:kapa_app/View/MainPage/Pages/AllBootsList.dart';
+import 'package:kapa_app/View/MainPage/Pages/Favorites.dart';
+import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class MainPage extends StatefulWidget {
-  final FirebaseUser firebaseUser;
-  MainPage({this.firebaseUser});
   @override
   State<StatefulWidget> createState() {
-    return new MainPageState(firebaseUser: firebaseUser);
+    return new MainPageState();
   }
 }
 
 class MainPageState extends State<MainPage> {
-  final FirebaseUser firebaseUser;
-  MainPageState({this.firebaseUser});
+  final Firestore _db = Firestore.instance;
   AuthService authService = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging();
+  FirestoreService fs = FirestoreService();
+  final tabs = [
+    AllBootsListView(),
+    UserAdsPage(),
+    Center(child: Text("SecretPage"),),
+    FavoritesList(),
+    AccountInfo(),
+  ];
+
+  bool userDataExis = false;
+  int _currentIndex=0;
+  int _previousIndex = 0;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    //_messaging.deleteInstanceID();
+    _messaging.getToken().then((value) => fs.setUserNotificationToken(value));
+    _messaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        // TODO optional
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        // TODO optional
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    return Scaffold(
-      appBar: customAppBar(),
-      backgroundColor: appThemeBackgroundHexColor,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(),
-        sized: false,
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/MainPage/MainBackground.png"),
-              fit: BoxFit.cover,
-            )
-          ),
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      alignment: Alignment.bottomLeft,
-                      icon: Icon(
-                        Icons.filter_list,
-                        color: Colors.white,
-                      ),
-                      onPressed: () { authService.signOut(); },
+    if (!userDataExis) checkUserDataExist();
+    return WillPopScope(
+      onWillPop: () async{
+        int temp;
+        temp = _currentIndex;
+        setState(() {
+          _currentIndex = _previousIndex;
+          _previousIndex = temp;
+        });
+        return false;
+      },
+      child: userDataExis ? Scaffold(
+          appBar: customAppBar(),
+          backgroundColor: appThemeBackgroundHexColor,
+          body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: const SystemUiOverlayStyle(),
+                  sized: false,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/MainPage/MainBackground.png"),
+                          fit: BoxFit.cover,
+                        )
                     ),
-                    Expanded(child: Container(),),
-                  ],
-                ),
-              ),
-              /*Padding(
-                padding: EdgeInsets.only(top: 0),
-                child: SizedBox(
-                  height: 50.0,
-                  width: MediaQuery.of(context).size.width,
-                  child: RaisedButton(onPressed: (){
-                   signOut();
-                  },
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: Text('SignOut', style: TextStyle(color: Colors.white),),
-                    padding: EdgeInsets.all(8.0),
-                    color: Theme.of(context).primaryColor,
+                    child: tabs[_currentIndex],
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 150, 0, 50),
-                child:  Image.asset('assets/images/LoginPage/Shape-18-copy-30.png', height: 373.0,),
-              ),*/
-            ],
+              )
           ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color:  HexColor("#505051"), width: 5),
-          color:  HexColor("#505051"),
-          shape: BoxShape.circle,
-        ),
-        height: 65.0,
-        width: 65.0,
-        child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductEditPage()),
-              );
-            },
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/MainPage/Rhombus.png"),
+              )
             ),
-            // elevation: 5.0,
+            width: size.width*0.2,
+            height: size.width*0.2,
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
+                );
+              },
+              child: Icon(Icons.add),
+            )
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        //notchMargin: 4.0,
-        child: Container(
-          height: 65,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.border_all, color: Colors.blue,), onPressed: () {},),
-              IconButton(icon: Icon(Icons.filter_drama, color: Colors.blue,), onPressed: () {},),
-              IconButton(icon: Icon(Icons.favorite, color: Colors.blue,), onPressed: () {
-              },),
-              IconButton(icon: Icon(Icons.settings, color: Colors.blue,), onPressed: () {},),
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: appThemeBottomAppBarBackground,
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(icon: Icon(const IconData(0xe901, fontFamily: 'kopa')),
+                  title: Container(),
+              ),
+              BottomNavigationBarItem(icon: Icon(const IconData(0xe902, fontFamily: 'kopa')),
+                  title: Container(),
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
+                  title: Text(""),
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.favorite),
+                  title: Container(),
+              ),
+              BottomNavigationBarItem(icon: Icon(Icons.settings),
+                title: Container(),
+              ),
             ],
-          ),
+            onTap: (index){
+              if(index!=2)
+                setState(() {
+                  _previousIndex = _currentIndex;
+                  _currentIndex = index;
+                });
+            },
+          )
+      ) : Container(
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-        color: HexColor("#505051"),
       ),
     );
   }
 
-  signOut()
-  {
-    //AuthService().signOut();
+  checkUserDataExist()
+  async {
+    final FirebaseUser user = await _auth.currentUser();
+    var document = await _db.collection('userdata').document(user.uid).get();
+    if(document.data!=null)
+      setState(() {
+        userDataExis = true;
+      });
+    else{
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => UserDataInput(),
+        ),
+            (route) => false,
+      );
+    }
   }
 }
