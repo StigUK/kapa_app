@@ -58,7 +58,7 @@ class _ProductViewState extends State<ProductView> {
         appBar: AppBar(),
         body: SingleChildScrollView(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(25),
             child: Container(
               decoration: BoxDecoration(
                 color: appThemeAdditionalHexColor,

@@ -20,104 +20,123 @@ class _FavoritesListState extends State<FavoritesList> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    if(!loadData) LoadAdsAndFavorites();
+    if (!loadData) LoadAdsAndFavorites();
     return Container(
       height: size.height,
       child: SingleChildScrollView(
-        child: loadData ? Container(
-          child: listAds.length>0 ? SizedBox(
-            height: size.height-84,
-            child:  ListView.builder(
-              itemCount: listAds.length+1,
-              itemBuilder: (BuildContext context, int i)
-              {
-                if(i!=listAds.length){
-                  bool isFavorite = false;
-                  favorites.forEach((element) {
-                    if(element == listAds[i].key)
-                      isFavorite = true;
-                  });
-                  return Stack(
-                    children: [
-                      GestureDetector(
-                        child:AdItem(listAds[i], size),
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductView(ad: listAds[i],isFavorite: isFavorite),));
-                        },
-                      ),
-                      Positioned(
-                        top: 20,
-                        child: Container(
-                          child: FlatButton(
-                            onPressed: () {
-                              favorites.remove(listAds[i].key);
-                              listAds.removeAt(i);
-                              fs.addNewFavorites(favorites);
-                              setState(() {
-                                listAds = listAds;
-                                favorites = favorites;
+        child: loadData
+            ? Container(
+                child: listAds.length > 0
+                    ? SizedBox(
+                        height: size.height - 84,
+                        child: ListView.builder(
+                          itemCount: listAds.length + 1,
+                          itemBuilder: (BuildContext context, int i) {
+                            if (i != listAds.length) {
+                              bool isFavorite = false;
+                              favorites.forEach((element) {
+                                if (element == listAds[i].key)
+                                  isFavorite = true;
                               });
-                            },
-                            child: Icon(Icons.favorite, size: 40, color: isFavorite ? Colors.red : Colors.white,),
+                              return Stack(
+                                children: [
+                                  GestureDetector(
+                                    child: AdItem(listAds[i], size),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ProductView(
+                                                ad: listAds[i],
+                                                isFavorite: isFavorite),
+                                          ));
+                                    },
+                                  ),
+                                  Positioned(
+                                    top: 20,
+                                    child: Container(
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          favorites.remove(listAds[i].key);
+                                          listAds.removeAt(i);
+                                          fs.addNewFavorites(favorites);
+                                          setState(() {
+                                            listAds = listAds;
+                                            favorites = favorites;
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.favorite,
+                                          size: 40,
+                                          color: isFavorite
+                                              ? Colors.red
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else
+                              return Container(
+                                height: 150,
+                              );
+                          },
+                        ),
+                      )
+                    : Container(
+                        child: SizedBox(
+                        height: size.height - 100,
+                        child: Center(
+                          child: Text(
+                            "Список улюблених товарів пустий :(",
+                            style: defaultTextStyle,
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }
-                else return Container(height: 150,);
-              },
-            ),
-          ) : Container(
-              child: SizedBox(
-                height: size.height-100,
-                child: Center(
-                  child: Text("Список улюблених товарів пустий :(",style: defaultTextStyle,),
-                ),
+                      )),
               )
-          ),
-        ) :
-        Container(
-            child: SizedBox(
-              height: size.height-140,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-        ),
+            : Container(
+                child: SizedBox(
+                height: size.height - 140,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )),
       ),
     );
   }
 
-  LoadAdsAndFavorites()
-  async{
+  LoadAdsAndFavorites() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _db = Firestore.instance;
     final FirebaseUser user = await _auth.currentUser();
     final List<Ad> listOfAds = List<Ad>();
     final List<String> listFavorites = List<String>();
-    await _db.collection("favorites").document(user.uid).get().then((value)
-    {
-      if(value.data!=null)
-        {
+    await _db.collection("favorites").document(user.uid).get().then((value) {
+      if (this.mounted) {
+        if (value.data != null) {
           value.data.forEach((key, value) => listFavorites.add(value));
           setState(() {
             favorites = listFavorites;
           });
-        }
-      else setState((){loadData = true;});
+        } else
+          setState(() {
+            loadData = true;
+          });
+      }
     });
     await _db.collection("ads").getDocuments().then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) {
         listFavorites.forEach((element) {
-          if(element == Ad.fromDocument(f).key)
+          if (element == Ad.fromDocument(f).key)
             listOfAds.add(Ad.fromDocument(f));
         });
       });
-      setState(() {
-        loadData = true;
-        listAds = listOfAds;
-      });
+      if (this.mounted)
+        setState(() {
+          loadData = true;
+          listAds = listOfAds;
+        });
     });
   }
 }

@@ -120,8 +120,8 @@ class MainPageState extends State<MainPage> {
                 image: AssetImage("assets/images/MainPage/Rhombus.png"),
               )
             ),
-            width: size.width*0.2,
-            height: size.width*0.2,
+            width: size.width*0.21,
+            height: size.width*0.21,
             child: GestureDetector(
               onTap: (){
                 Navigator.push(
@@ -143,8 +143,8 @@ class MainPageState extends State<MainPage> {
               BottomNavigationBarItem(icon: Icon(const IconData(0xe902, fontFamily: 'kopa')),
                   title: Container(),
               ),
-              BottomNavigationBarItem(icon: Icon(Icons.brightness_1),
-                  title: Text(""),
+              BottomNavigationBarItem(icon: Icon(Icons.brightness_1, size: 0),
+                  title: Container(),
               ),
               BottomNavigationBarItem(icon: Icon(Icons.favorite),
                   title: Container(),

@@ -19,29 +19,26 @@ import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
-
   Ad ad;
   ProductEditPage({this.ad});
   @override
-  _ProductEditPageState createState()
-  {
+  _ProductEditPageState createState() {
     return _ProductEditPageState(ad: ad);
   }
 }
 
 class _ProductEditPageState extends State<ProductEditPage> {
-
   _ProductEditPageState({this.ad});
   var size;
   //Boots temp Data
-  double bootWidth=0;
-  double bootHeight=0;
-  double bootSize=33.5;
-  int bootSizeType=0;
-  String bootDescription="";
-  String bootModelName="Other";
-  double bootPrice=0;
-  String bootMaterial="Шкіра";
+  double bootWidth = 0;
+  double bootHeight = 0;
+  double bootSize = 33.5;
+  int bootSizeType = 0;
+  String bootDescription = "";
+  String bootModelName = "Other";
+  double bootPrice = 0;
+  String bootMaterial = "Шкіра";
   List<String> images = [];
 
   FirebaseStorage _storage = FirebaseStorage.instance;
@@ -52,15 +49,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
   var descriptionTEC;
   var sizeOfContainer;
 
-  String error="";
-
-  File _image;
+  String error = "";
 
   String uniqAd = DateTime.now().toString();
 
   @override
   Widget build(BuildContext context) {
-    if(!initialized)initializeFields();
+    if (!initialized) initializeFields();
     descriptionTEC = TextEditingController(text: bootDescription);
     size = MediaQuery.of(context).size;
     return Scaffold(
@@ -69,61 +64,73 @@ class _ProductEditPageState extends State<ProductEditPage> {
         backgroundColor: appThemeBackgroundHexColor,
         actions: <Widget>[
           FlatButton(
-              onPressed: (){
-                if(checkFields()==true)
-                  {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context){
-                          return AlertDialog(
-                            backgroundColor: appThemeAdditionalHexColor,
-                            title: Container(padding: EdgeInsets.all(20),child: Text("Зберегти зміни?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
-                            content: Container(
-                              padding: EdgeInsets.only(top:20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: size.width*0.2,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50)
-                                    ),
-                                    child: FlatButton(
-                                      child: Text('Ні',style: defaultTextStyle),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                      padding: EdgeInsets.all(8.0),
-                                      color: appThemeBlueMainColor,
-                                    ),
+              onPressed: () {
+                if (checkFields() == true) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: appThemeAdditionalHexColor,
+                          title: Container(
+                              padding: EdgeInsets.all(20),
+                              child: Text("Зберегти зміни?",
+                                  style: dialogTitleTextStyle,
+                                  textAlign: TextAlign.center)),
+                          content: Container(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: size.width * 0.2,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50)),
+                                  child: FlatButton(
+                                    child: Text('Ні', style: defaultTextStyle),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    padding: EdgeInsets.all(8.0),
+                                    color: appThemeBlueMainColor,
                                   ),
-                                  Container(
-                                    width: size.width*0.2,
-                                    child: FlatButton(
-                                      child: Text('Так',style: defaultTextStyle,),
-                                      onPressed: () {
-                                        UploadAdd();
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                                      },
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                      padding: EdgeInsets.all(8.0),
-                                      color: appThemeBlueMainColor,
+                                ),
+                                Container(
+                                  width: size.width * 0.2,
+                                  child: FlatButton(
+                                    child: Text(
+                                      'Так',
+                                      style: defaultTextStyle,
                                     ),
+                                    onPressed: () {
+                                      UploadAdd();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MainPage()));
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    padding: EdgeInsets.all(8.0),
+                                    color: appThemeBlueMainColor,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        }
-                    );
-                    setState(() {
-                      error = "";
-                    });
-                  }
+                          ),
+                        );
+                      });
+                  setState(() {
+                    error = "";
+                  });
+                }
               },
-              child: Text("Зберегти",style: TextStyle(color: appThemeBlueMainColor))
-          )
+              child: Text("Зберегти",
+                  style: TextStyle(color: appThemeBlueMainColor)))
         ],
       ),
       body: SingleChildScrollView(
@@ -140,40 +147,41 @@ class _ProductEditPageState extends State<ProductEditPage> {
               //Модель
               TextWithDot("Модель"),
               Container(
-                width: size.width-20,
+                width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
                 child: InkWell(
-                  onTap: ()
-                  {
-                    universalPicker(1,ModelsNames);
+                  onTap: () {
+                    universalPicker(1, ModelsNames);
                   },
-                  child:  Padding(
+                  child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(bootModelName, style: defaultTextStyle, textAlign: TextAlign.start),
+                    child: Text(bootModelName,
+                        style: defaultTextStyle, textAlign: TextAlign.start),
                   ),
                 ),
               ),
               //Матераіал
               TextWithDot("Матеріал"),
               Container(
-                width: size.width-20,
+                width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
                 child: InkWell(
                   onTap: () {
-                    universalPicker(2,BootMaterial);
+                    universalPicker(2, BootMaterial);
                   },
-                  child:  Padding(
+                  child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(bootMaterial, style: defaultTextStyle, textAlign: TextAlign.start),
+                    child: Text(bootMaterial,
+                        style: defaultTextStyle, textAlign: TextAlign.start),
                   ),
                 ),
               ),
               //Опис
               TextWithDot("Опис"),
               Container(
-                width: size.width-20,
+                width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
                 decoration: decorationForContainerWithBorder_bottom,
                 child: Padding(
@@ -181,10 +189,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   child: TextField(
                     controller: descriptionTEC,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                      ),
+                      border: OutlineInputBorder(),
                     ),
-                    onChanged: (value){
+                    onChanged: (value) {
                       bootDescription = value;
                     },
                     maxLength: 300,
@@ -195,15 +202,16 @@ class _ProductEditPageState extends State<ProductEditPage> {
               //Ціна
               TextWithDot("Ціна"),
               Container(
-                  width: size.width-20,
+                  width: size.width - 20,
                   padding: EdgeInsets.only(right: 10, left: 10),
                   decoration: decorationForContainerWithBorder_bottom,
                   child: TextField(
                     //controller: priceTEC,
-                    onChanged: (value){
-                      if(value!="")
+                    onChanged: (value) {
+                      if (value != "")
                         bootPrice = double.parse(value);
-                      else bootPrice = 0.0;
+                      else
+                        bootPrice = 0.0;
                     },
                     keyboardType: TextInputType.number,
                     maxLength: 10,
@@ -214,13 +222,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       hintText: bootPrice.toString(),
                     ),
                     maxLines: 1,
-                  )
-              ),
+                  )),
               Padding(
                 padding: EdgeInsets.all(20),
                 child: showErrorText(error),
               )
-
             ],
           ),
         ),
@@ -228,30 +234,31 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  setSizesArray(int sizeType)
-  {
-    switch(sizeType)
-    {
-      case 0: {
-        return UKSizes;
-        break;
-      }
-      case 1: {
-        return EUSizes;
-        break;
-      }
-      case 2: {
-        return EUSizes;
-        break;
-      }
-      default: {
-        return EUSizes;
-      }
+  setSizesArray(int sizeType) {
+    switch (sizeType) {
+      case 0:
+        {
+          return UKSizes;
+          break;
+        }
+      case 1:
+        {
+          return EUSizes;
+          break;
+        }
+      case 2:
+        {
+          return EUSizes;
+          break;
+        }
+      default:
+        {
+          return EUSizes;
+        }
     }
   }
 
-  Widget bootSizes()
-  {
+  Widget bootSizes() {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -261,7 +268,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(left: 20, right: 20),
-            child: Image.asset('assets/images/ProductEditPage/sneaker.png', width: (size.width*0.2)),
+            child: Image.asset('assets/images/ProductEditPage/sneaker.png',
+                width: (size.width * 0.2)),
           ),
           Expanded(
             child: Column(
@@ -276,9 +284,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border(
-                                  right: BorderSide(color: appThemeAdditionalSecondHexColor)
-                              )
-                          ),
+                                  right: BorderSide(
+                                      color:
+                                          appThemeAdditionalSecondHexColor))),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -287,10 +295,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
                               Container(
                                 padding: EdgeInsets.all(0),
                                 child: FlatButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     sizePicker(context);
                                   },
-                                  child: Text(bootSize.toString(), style: defaultTextStyle),
+                                  child: Text(bootSize.toString(),
+                                      style: defaultTextStyle),
                                 ),
                               ),
                             ],
@@ -300,15 +309,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       Container(
                         width: 70,
                         child: FlatButton(
-                          onPressed: (){
+                          onPressed: () {
                             universalPicker(0, SizeTypeFull);
                           },
-                          child: Text(SizeType[bootSizeType], style: defaultTextStyle),
+                          child: Text(SizeType[bootSizeType],
+                              style: defaultTextStyle),
                         ),
                       ),
                     ],
                   ),
-
                 ),
                 //Довжина
                 Container(
@@ -320,9 +329,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border(
-                                  right: BorderSide(color: appThemeAdditionalSecondHexColor)
-                              )
-                          ),
+                                  right: BorderSide(
+                                      color:
+                                          appThemeAdditionalSecondHexColor))),
                           child: Text("Довжина / см", style: defaultTextStyle),
                         ),
                       ),
@@ -339,8 +348,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                           keyboardType: TextInputType.number,
                           maxLength: 3,
                           maxLines: 1,
-                          onChanged: (String value)
-                          {
+                          onChanged: (String value) {
                             setState(() {
                               bootHeight = double.parse(value);
                             });
@@ -349,7 +357,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       ),
                     ],
                   ),
-
                 ),
                 //Ширина
                 Container(
@@ -361,9 +368,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         child: Container(
                           decoration: BoxDecoration(
                               border: Border(
-                                  right: BorderSide(color: appThemeAdditionalSecondHexColor)
-                              )
-                          ),
+                                  right: BorderSide(
+                                      color:
+                                          appThemeAdditionalSecondHexColor))),
                           child: Text("Ширина / см", style: defaultTextStyle),
                         ),
                       ),
@@ -380,8 +387,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                           keyboardType: TextInputType.number,
                           maxLength: 3,
                           maxLines: 1,
-                          onChanged: (String value)
-                          {
+                          onChanged: (String value) {
                             setState(() {
                               bootWidth = double.parse(value);
                             });
@@ -399,103 +405,86 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Widget GridImages()
-  {
-    try{
+  Widget GridImages() {
+    try {
       return Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: appThemeAdditionalHexColor,
         ),
         child: SizedBox(
-          height: images.length >= 4 ? (size.width)/2 : (size.width)/4,
+          height: images.length >= 4 ? (size.width) / 2 : (size.width) / 4,
           child: GridView.count(
             crossAxisCount: 4,
             scrollDirection: Axis.vertical,
-            children: images.length==8 ?
-            List.generate(images.length, (index) {
-              return stackImage(index);
-              }):
-            List.generate(images.length+1, (index) {
-              if(images.length==8) {
-                print(images.length);
-                if(images.length>index)
-                  return stackImage(index);
-                else return Container();
-              }
-              else {
-                if(index < images.length) {
-                  return stackImage(index);
-                }
-                else return roundedContainer(
-                    childWidget: FlatButton(
-                      onPressed: (){
-                        uploadPic();
-                      },
-                      child: Image.asset('assets/images/ProductEditPage/Photo.png'),
-                    ));
-              };
-            }),
+            children: images.length == 8
+                ? List.generate(images.length, (index) {
+                    return stackImage(index);
+                  })
+                : List.generate(images.length + 1, (index) {
+                    if (images.length == 8) {
+                      print(images.length);
+                      if (images.length > index)
+                        return stackImage(index);
+                      else
+                        return Container();
+                    } else {
+                      if (index < images.length) {
+                        return stackImage(index);
+                      } else
+                        return roundedContainer(
+                            childWidget: FlatButton(
+                          onPressed: () {
+                            uploadPic();
+                          },
+                          child: Image.asset(
+                              'assets/images/ProductEditPage/Photo.png'),
+                        ));
+                    }
+                    ;
+                  }),
           ),
         ),
       );
+    } catch (e) {
+      print(e);
     }
-    catch(e)
-    {
-    print(e);
-    }
-
   }
 
-  Widget stackImage(int index)
-  {
-    if(images[index]!=null)
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        roundedContainer(childWidget: Image.network(images[index])),
-        FlatButton(
-          onPressed: (){
-            images.removeAt(index);
-            setState(() {
-              images = images;
-            });
-          },
-          child: Image.asset("assets/images/ProductEditPage/close.png", width: 40),
-        )
-      ],
-    );
-    else return Stack(
-      alignment: Alignment.center,
-      children: [
-        CircularProgressIndicator(),
-      ],
-    );
+  Widget stackImage(int index) {
+    if (images[index] != null)
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          roundedContainer(childWidget: Image.network(images[index])),
+          FlatButton(
+            onPressed: () {
+              images.removeAt(index);
+              setState(() {
+                images = images;
+              });
+            },
+            child: Image.asset("assets/images/ProductEditPage/close.png",
+                width: 40),
+          )
+        ],
+      );
+    else
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          CircularProgressIndicator(),
+        ],
+      );
   }
 
-  sizePicker(BuildContext context)
-  {
-      Picker(
-          adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(setSizesArray(bootSizeType)), isArray: true),
-          hideHeader: true,
-          backgroundColor: appThemePickerBackgroundColor,
-          containerColor: appThemePickerBackgroundColor,
-          textStyle: defaultTextStyle,
-          cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
-          selectedTextStyle: defaultTextStyle,
-          confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
-          onConfirm: (Picker picker, List value) {
-            setState(() {
-              bootSize = double.parse(picker.getSelectedValues()[0]);
-            });
-          }
-      ).showDialog(context);
-  }
-
-  universalPicker(returnVarialble, pickerData)
-  {
+  sizePicker(BuildContext context) {
     Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
+        cancelText: "Відміна",
+        confirmText: "Застосувати",
+        adapter: PickerDataAdapter<String>(
+            pickerdata: new JsonDecoder().convert(setSizesArray(bootSizeType)),
+            isArray: true),
         hideHeader: true,
         backgroundColor: appThemePickerBackgroundColor,
         containerColor: appThemePickerBackgroundColor,
@@ -505,56 +494,96 @@ class _ProductEditPageState extends State<ProductEditPage> {
         confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
         onConfirm: (Picker picker, List value) {
           setState(() {
-            switch(returnVarialble)
-            {
-              case 0:{
-                bootSizeType = int.parse(value[0].toString());
-                break;
-              }
-              case 1:{
-                bootModelName = picker.getSelectedValues()[0];
-                break;
-              }
-              case 2:{
-                bootMaterial = picker.getSelectedValues()[0];
-                break;
-              }
-            }
+            bootSize = double.parse(picker.getSelectedValues()[0]);
           });
-        }
-    ).showDialog(context);
+        }).showDialog(context);
   }
 
-  bool checkFields()
-  {
-    if(images.length<1)
-      {
+  universalPicker(returnVarialble, pickerData) {
+    Picker(
+        cancelText: "Відміна",
+        confirmText: "Застосувати",
+        adapter: PickerDataAdapter<String>(
+            pickerdata: new JsonDecoder().convert(pickerData), isArray: true),
+        hideHeader: true,
+        backgroundColor: appThemePickerBackgroundColor,
+        containerColor: appThemePickerBackgroundColor,
+        textStyle: defaultTextStyle,
+        cancelTextStyle: TextStyle(color: appThemeBlueMainColor),
+        selectedTextStyle: defaultTextStyle,
+        confirmTextStyle: TextStyle(color: appThemeBlueMainColor),
+        onConfirm: (Picker picker, List value) {
+          setState(() {
+            switch (returnVarialble) {
+              case 0:
+                {
+                  bootSizeType = int.parse(value[0].toString());
+                  break;
+                }
+              case 1:
+                {
+                  bootModelName = picker.getSelectedValues()[0];
+                  break;
+                }
+              case 2:
+                {
+                  bootMaterial = picker.getSelectedValues()[0];
+                  break;
+                }
+            }
+          });
+        }).showDialog(context);
+  }
+
+  bool checkFields() {
+    print("Height: " +
+        bootHeight.toString() +
+        "   " +
+        "Width: " +
+        bootWidth.toString() +
+        "   " +
+        "Desc: " +
+        bootDescription.toString());
+    print("Images Length: " + images.length.toString());
+    if (images.length < 1) {
+      setState(() {
+        error = "Додайте хоча б одне фото";
+      });
+      return false;
+    }
+    print("Elements: ");
+    for (final i in images) {
+      if (i == null) {
         setState(() {
-          error = "Додайте хоча б одне фото";
+          error = "Зачекайте доки зображення завантажиться";
         });
         return false;
       }
-    else
-    if((bootHeight==0)||(bootWidth==0)||(bootDescription==""))
+    }
+    print("____FIELDS_____");
+    if ((bootHeight == 0.0) || (bootWidth == 0.0) || (bootDescription == "")) {
       setState(() {
-      error = "Заповніть всі поля";
+        error = "Заповніть всі поля";
+      });
       return false;
+    }
+    setState(() {
+      error = "";
     });
-    else
     return true;
   }
 
-  Widget showErrorText(String error)
-  {
+  Widget showErrorText(String error) {
     return Container(
-      child: Center(
-        child: Text(error, style: TextStyle(color: Colors.red),),
-      )
-    );
+        child: Center(
+      child: Text(
+        error,
+        style: TextStyle(color: Colors.red),
+      ),
+    ));
   }
 
-  UploadAdd()
-  async {
+  UploadAdd() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final FirebaseUser user = await _auth.currentUser();
     FirestoreService fs = FirestoreService();
@@ -569,53 +598,51 @@ class _ProductEditPageState extends State<ProductEditPage> {
       modelName: bootModelName,
     );
     Ad _ad = Ad(images: images, boot: bt, userId: user.uid, active: true);
-    ad==null ? fs.addNewAd(_ad) : fs.editAd(_ad);
+    ad == null ? fs.addNewAd(_ad) : fs.editAd(_ad);
   }
 
   initializeFields() {
-    ad != null ?
-    setState(() {
-      bootDescription = ad.boot.description;
-      bootWidth = ad.boot.width;
-      bootHeight = ad.boot.height;
-      bootSize = ad.boot.size;
-      bootSizeType = ad.boot.sizeType;
-      bootPrice = ad.boot.price;
-      bootMaterial = ad.boot.material;
-      bootModelName = ad.boot.modelName;
-      images = ad.images;
-      initialized = true;
-    }) :
-    setState(() {
-      initialized = true;
-    });
+    ad != null
+        ? setState(() {
+            bootDescription = ad.boot.description;
+            bootWidth = ad.boot.width;
+            bootHeight = ad.boot.height;
+            bootSize = ad.boot.size;
+            bootSizeType = ad.boot.sizeType;
+            bootPrice = ad.boot.price;
+            bootMaterial = ad.boot.material;
+            bootModelName = ad.boot.modelName;
+            images = ad.images;
+            initialized = true;
+          })
+        : setState(() {
+            initialized = true;
+          });
   }
 
   Future<String> uploadPic() async {
     File image;
     try {
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
-      setState(() {
-        images.add(null);
-      });
     } on PlatformException catch (e) {
       return null;
     }
-    if(image!=null)
-    {
-        StorageReference reference = _storage.ref().child(image.path.split('/').last);
-        String filePath = 'images/$uniqAd/${DateTime.now()}.png';
-        StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
-        print("HERE");
-        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-        String url = await taskSnapshot.ref.getDownloadURL();
-        setState(() {
-          images.last = url;
-          print(url);
-        });
-    }
-    else{
-
-    }
+    if (image != null) {
+      setState(() {
+        images.add(null);
+      });
+      StorageReference reference =
+          _storage.ref().child(image.path.split('/').last);
+      String filePath = 'images/$uniqAd/${DateTime.now()}.png';
+      StorageUploadTask uploadTask =
+          _storage.ref().child(filePath).putFile(image);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      String url = await taskSnapshot.ref.getDownloadURL();
+      setState(() {
+        images.remove(null);
+        images.add(url);
+        print(url);
+      });
+    } else {}
   }
 }
