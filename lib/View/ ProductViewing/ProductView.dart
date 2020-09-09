@@ -72,7 +72,7 @@ class _ProductViewState extends State<ProductView> {
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => FullScreenImageView(images: ad.images)));
                       },
-                      child:  imagesCarousel(ad.images, BoxFit.cover, size.width),
+                      child:  imagesCarousel(ad.images, BoxFit.cover, size.width, false),
                     ),
                   ),
                   Container(
