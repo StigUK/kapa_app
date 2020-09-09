@@ -20,7 +20,7 @@ class _FavoritesListState extends State<FavoritesList> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    if (!loadData) LoadAdsAndFavorites();
+    if (!loadData) loadAdsAndFavorites();
     return Container(
       height: size.height,
       child: SingleChildScrollView(
@@ -41,7 +41,7 @@ class _FavoritesListState extends State<FavoritesList> {
                               return Stack(
                                 children: [
                                   GestureDetector(
-                                    child: AdItem(listAds[i], size),
+                                    child: adItem(listAds[i], size),
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -106,7 +106,7 @@ class _FavoritesListState extends State<FavoritesList> {
     );
   }
 
-  LoadAdsAndFavorites() async {
+  loadAdsAndFavorites() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _db = Firestore.instance;
     final FirebaseUser user = await _auth.currentUser();

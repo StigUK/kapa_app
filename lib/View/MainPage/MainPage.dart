@@ -2,14 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kapa_app/Models/UserData.dart';
 import 'package:kapa_app/Resources/colors.dart';
+import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
-import 'package:kapa_app/View/AccountInfo/AccountInfo.dart';
+import 'package:kapa_app/View/MainPage/Pages/AccountInfo/AccountInfo.dart';
 import 'package:kapa_app/View/MainPage/Pages/UserAds.dart';
 import 'package:kapa_app/View/MainPage/Pages/AllBootsList.dart';
 import 'package:kapa_app/View/MainPage/Pages/Favorites.dart';
 import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
+import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,6 +29,9 @@ class MainPageState extends State<MainPage> {
   AuthService authService = AuthService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging();
+  UserData userData;
+  bool phoneNumberVerify = false;
+
   FirestoreService fs = FirestoreService();
   final tabs = [
     AllBootsListView(),
@@ -35,11 +41,13 @@ class MainPageState extends State<MainPage> {
     AccountInfo(),
   ];
 
-  bool userDataExis = false;
+  BuildContext bodyContext;
+
+  bool userDataExist = false;
   int _currentIndex=0;
   int _previousIndex = 0;
 
-
+  BuildContext globalContext;
 
   @override
   void initState() {
@@ -78,9 +86,11 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    globalContext = context;
+    //checkUserDataExist();
+    if(!userDataExist) checkUserDataExist();
     var size = MediaQuery.of(context).size;
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    if (!userDataExis) checkUserDataExist();
     return WillPopScope(
       onWillPop: () async{
         int temp;
@@ -91,27 +101,33 @@ class MainPageState extends State<MainPage> {
         });
         return false;
       },
-      child: userDataExis ? Scaffold(
+      child: userDataExist ? Scaffold(
           appBar: customAppBar(),
           backgroundColor: appThemeBackgroundHexColor,
-          body: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(),
-                child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: const SystemUiOverlayStyle(),
-                  sized: false,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/MainPage/MainBackground.png"),
-                          fit: BoxFit.cover,
-                        )
+          body: Builder(
+            builder: (_context)
+            {
+              bodyContext = _context;
+              return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(),
+                    child: AnnotatedRegion<SystemUiOverlayStyle>(
+                      value: const SystemUiOverlayStyle(),
+                      sized: false,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/MainPage/MainBackground.png"),
+                              fit: BoxFit.cover,
+                            )
+                        ),
+                        child: tabs[_currentIndex],
+                      ),
                     ),
-                    child: tabs[_currentIndex],
-                  ),
-                ),
-              )
+                  )
+              );
+            },
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
@@ -124,10 +140,59 @@ class MainPageState extends State<MainPage> {
             height: size.width*0.21,
             child: GestureDetector(
               onTap: (){
+                if(phoneNumberVerify)
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
                 );
+                else {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context){
+                        return AlertDialog(
+                          backgroundColor: appThemeAdditionalHexColor,
+                          title: Container(padding: EdgeInsets.all(20),child: Text("Спочатку потрібно підтвердити номер телефону", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
+                          content: Container(
+                            padding: EdgeInsets.only(top:20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: size.width*0.3,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50)
+                                  ),
+                                  child: FlatButton(
+                                    child: Text('Відміна',style: defaultTextStyle,),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                    padding: EdgeInsets.all(8.0),
+                                    color: appThemeBlueMainColor,
+                                  ),
+                                ),
+                                Container(
+                                  width: size.width*0.3,
+                                  child: FlatButton(
+                                    child: Text('Підтвердити',style: defaultTextStyle,),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      goToVerifyPhone();
+                                      checkUserDataExist();
+                                    },
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                    padding: EdgeInsets.all(8.0),
+                                    color: appThemeBlueMainColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                  );
+                }
               },
               child: Icon(Icons.add),
             )
@@ -171,20 +236,40 @@ class MainPageState extends State<MainPage> {
 
   checkUserDataExist()
   async {
-    final FirebaseUser user = await _auth.currentUser();
-    var document = await _db.collection('userdata').document(user.uid).get();
-    if(document.data!=null)
-      setState(() {
-        userDataExis = true;
+    if (this.mounted){
+      FirebaseUser user = await _auth.currentUser();
+      await _db.collection("userdata").document(user.uid).get().then((value){
+        if(value.data!=null)
+        {
+          userData = UserData(
+            name: value.data['name'],
+            city: value.data['city'],
+            phoneNumber: value.data['phoneNumber'],
+            image: value.data['image'],
+          );
+          if(this.mounted)
+          setState(() {
+            if(user.phoneNumber == userData.phoneNumber)
+              phoneNumberVerify = true;
+            else phoneNumberVerify = false;
+            userDataExist = true;
+          });
+        }
+        else {
+          Navigator.pushAndRemoveUntil(globalContext, MaterialPageRoute(
+              builder: (BuildContext context) => UserDataInput()),
+                  (route) => false
+          );
+        }
       });
-    else{
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => UserDataInput(),
-        ),
-            (route) => false,
-      );
     }
+  }
+
+  goToVerifyPhone(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => VerifyNumber(isLogin: false, number: userData.phoneNumber)),
+    );
   }
 }

@@ -6,16 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kapa_app/Core/TextAreaValidator.dart';
-import 'package:kapa_app/Models/userinfo.dart';
+import 'package:kapa_app/Models/UserData.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
-import 'package:kapa_app/View/Widgets/TextWithDot.dart';
+import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
+import 'package:kapa_app/View/Widgets/SnackBar.dart';
 
 class AccountInfoEdit extends StatefulWidget {
-
-
   String image;
   String name;
   String number;
@@ -33,6 +32,8 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
   _AccountInfoEditState({this.name, this.image, this.number, this.city});
   GlobalKey<FormState> _key = GlobalKey();
   bool _validate = false;
+
+  BuildContext bodyContext;
 
   TextEditingController nameTEC = TextEditingController();
   TextEditingController cityTEC = TextEditingController();
@@ -57,53 +58,55 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
     return Scaffold(
       backgroundColor: appThemeBackgroundHexColor,
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(5),
-          child:  Column(
-            children: [
-              //Image and name
-              Row(
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundImage: image !=null ? NetworkImage(image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
-                          ),
-                          CircleAvatar(
-                            child: FlatButton(
-                              onPressed: (){
-                                uploadPic();
-                              },
-                              child: Container(),
+      body: Builder(
+        builder: (_context) => SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(5),
+            child:  Column(
+              children: [
+                //Image and name
+                Row(
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            CircleAvatar(
+                              radius: 60,
+                              backgroundImage: image !=null ? NetworkImage(image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
                             ),
-                            backgroundImage: AssetImage("assets/images/ProductEditPage/Photo.png"),
-                          ),
-                        ],
-                      )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 5),
-                      child:  Text("Змінити фото", style: defaultTextStyle),
+                            CircleAvatar(
+                              child: FlatButton(
+                                onPressed: (){
+                                  uploadPic();
+                                },
+                                child: Container(),
+                              ),
+                              backgroundImage: AssetImage("assets/images/ProductEditPage/Photo.png"),
+                            ),
+                          ],
+                        )
                     ),
-                  ),
-                ],
-              ),
-              dataInputForm(),
-            ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child:  Text("Змінити фото", style: defaultTextStyle),
+                      ),
+                    ),
+                  ],
+                ),
+                dataInputForm(_context),
+              ],
+            ),
           ),
         ),
-      )
+      ),
     );
   }
 
-  Widget dataInputForm()
+  Widget dataInputForm(_context)
   {
     return Container(
       padding: EdgeInsets.all(15),
@@ -169,7 +172,8 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
                 height: 45,
                 width: MediaQuery.of(context).size.width,
                 child: RaisedButton(onPressed: (){
-                  SendDataToFirestore();
+                  bodyContext = _context;
+                  sendDataToFirestore();
                 },
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   child: Text('Зберегти', style: defaultTextStyle),
@@ -192,14 +196,28 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
     initialized = true;
   }
 
-  SendDataToFirestore()
-  {
+  sendDataToFirestore()
+  async {
     if(_key.currentState.validate())
     {
+      final FirebaseUser user = await _auth.currentUser();
       FirestoreService fs = FirestoreService();
-      UserData userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text, image: image);
-      fs.setUserInfo(userData);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+      UserData userData;
+      if(user.phoneNumber == numberTEC.text)
+      {
+        userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text, image: image);
+        fs.setUserInfo(userData);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MainPage()
+          ),
+        );
+      }
+      else {
+        MySnackBar snackBar = MySnackBar();
+        snackBar.showPhoneVerifySnackBar(bodyContext, goToVerifyPhone);
+      }
     }
     else
       setState(() {
@@ -207,15 +225,23 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
       });
   }
 
+  goToVerifyPhone(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => VerifyNumber(isLogin: false, number: numberTEC.text)),
+    );
+  }
+
   Future<String> uploadPic() async {
     File image;
-    final FirebaseUser user = await _auth.currentUser();
     try {
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
     } on PlatformException catch (e) {
+      print(e);
       return null;
     }
-    StorageReference reference = _storage.ref().child(image.path.split('/').last);
+    //StorageReference reference = _storage.ref().child(image.path.split('/').last);
     String filePath = 'profileImages/${DateTime.now()}.png';
     StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
@@ -225,4 +251,5 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
       print(url);
     });
   }
+
 }

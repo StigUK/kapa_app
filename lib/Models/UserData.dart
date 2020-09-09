@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserData
-{
+class UserData {
   String userId;
   String phoneNumber;
   String name;
@@ -15,16 +14,16 @@ class UserData
       "phoneNumber": phoneNumber,
       "name": name,
       "city": city,
-      "image": image
+      "image": image,
     };
   }
 
   factory UserData.fromDocument(DocumentSnapshot doc) {
     return UserData(
-        image: doc['image'] ?? [''],
-        name: doc['name'] ?? [''],
-        city: doc['city'] ?? [''],
-        phoneNumber: doc['phoneNumber'] ?? [''],
+      image: doc.data['image'] ?? [''],
+      name:  doc.data['name'] ?? [''],
+      city:  doc.data['city'] ?? [''],
+      phoneNumber:  doc.data['phoneNumber'] ?? [''],
     );
   }
 }

@@ -9,7 +9,6 @@ import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:kapa_app/View/%20ProductViewing/ProductView.dart';
 import 'package:kapa_app/View/Widgets/AdItem.dart';
-import 'package:kapa_app/View/Widgets/CustomDialog.dart';
 
 class UserAdsPage extends StatefulWidget {
   @override
@@ -76,7 +75,7 @@ class _UserAdsPageState extends State<UserAdsPage> {
                         itemCount: listActiveAds.length,
                         itemBuilder: (BuildContext context, int i) {
                           return GestureDetector(
-                            child: AdItem(listActiveAds[i], size),
+                            child: adItem(listActiveAds[i], size),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -113,7 +112,7 @@ class _UserAdsPageState extends State<UserAdsPage> {
                           return Stack(
                             children: [
                               GestureDetector(
-                                child: AdItem(listArchiveAds[i], size),
+                                child: adItem(listArchiveAds[i], size),
                                 onTap: () {
                                   Navigator.push(
                                       context,

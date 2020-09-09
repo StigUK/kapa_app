@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Resources/colors.dart';
-import 'package:kapa_app/Resources/styles.dart';
 
-Widget TextWithDot(String text)
+Widget textWithDot(String text)
 {
   return Padding(
     padding: const EdgeInsets.all(10),

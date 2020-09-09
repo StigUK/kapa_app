@@ -105,7 +105,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                       style: defaultTextStyle,
                                     ),
                                     onPressed: () {
-                                      UploadAdd();
+                                      uploadAdd();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -139,13 +139,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
           child: Column(
             children: <Widget>[
               //Зображення
-              TextWithDot("Додати фото"),
-              GridImages(),
+              textWithDot("Додати фото"),
+              gridImages(),
               //Розміри
-              TextWithDot("Розміри"),
+              textWithDot("Розміри"),
               bootSizes(),
               //Модель
-              TextWithDot("Модель"),
+              textWithDot("Модель"),
               Container(
                 width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
@@ -162,7 +162,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 ),
               ),
               //Матераіал
-              TextWithDot("Матеріал"),
+              textWithDot("Матеріал"),
               Container(
                 width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
@@ -179,7 +179,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 ),
               ),
               //Опис
-              TextWithDot("Опис"),
+              textWithDot("Опис"),
               Container(
                 width: size.width - 20,
                 padding: EdgeInsets.only(right: 10, left: 10),
@@ -200,7 +200,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 ),
               ),
               //Ціна
-              TextWithDot("Ціна"),
+              textWithDot("Ціна"),
               Container(
                   width: size.width - 20,
                   padding: EdgeInsets.only(right: 10, left: 10),
@@ -239,17 +239,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
       case 0:
         {
           return UKSizes;
-          break;
         }
       case 1:
         {
           return EUSizes;
-          break;
         }
       case 2:
         {
           return EUSizes;
-          break;
         }
       default:
         {
@@ -405,7 +402,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  Widget GridImages() {
+  Widget gridImages() {
     try {
       return Container(
         padding: EdgeInsets.all(5),
@@ -432,7 +429,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       if (index < images.length) {
                         return stackImage(index);
                       } else
-                        return roundedContainer(
+                        return RoundedContainer(
                             childWidget: FlatButton(
                           onPressed: () {
                             uploadPic();
@@ -441,13 +438,17 @@ class _ProductEditPageState extends State<ProductEditPage> {
                               'assets/images/ProductEditPage/Photo.png'),
                         ));
                     }
-                    ;
                   }),
           ),
         ),
       );
     } catch (e) {
       print(e);
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
   }
 
@@ -456,7 +457,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       return Stack(
         alignment: Alignment.center,
         children: [
-          roundedContainer(childWidget: Image.network(images[index])),
+          RoundedContainer(childWidget: Image.network(images[index])),
           FlatButton(
             onPressed: () {
               images.removeAt(index);
@@ -583,7 +584,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     ));
   }
 
-  UploadAdd() async {
+  uploadAdd() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final FirebaseUser user = await _auth.currentUser();
     FirestoreService fs = FirestoreService();
@@ -625,14 +626,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
     try {
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
     } on PlatformException catch (e) {
+      print(e);
       return null;
     }
     if (image != null) {
       setState(() {
         images.add(null);
       });
-      StorageReference reference =
-          _storage.ref().child(image.path.split('/').last);
+      /*StorageReference reference =
+          _storage.ref().child(image.path.split('/').last);*/
       String filePath = 'images/$uniqAd/${DateTime.now()}.png';
       StorageUploadTask uploadTask =
           _storage.ref().child(filePath).putFile(image);

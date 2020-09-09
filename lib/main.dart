@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Services/authservice.dart';
-import 'package:kapa_app/View/LoginPage/Login.dart';
 
 import 'Resources/colors.dart';
 
@@ -9,6 +8,7 @@ void main() {
 }
 
 class Main extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();

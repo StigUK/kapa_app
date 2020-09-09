@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:kapa_app/Data/PickersData.dart';
 import 'package:kapa_app/Models/ad.dart';
-import 'package:kapa_app/Models/boot.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
@@ -16,6 +15,9 @@ import 'package:kapa_app/View/Widgets/AdItem.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class AllBootsListView extends StatefulWidget {
+
+  AllBootsListView();
+
   @override
   _AllBootsListViewState createState() => _AllBootsListViewState();
 }
@@ -25,7 +27,6 @@ class _AllBootsListViewState extends State<AllBootsListView> {
   List<Ad> fullListAds = List<Ad>();
   List<Ad> listAds = List<Ad>();
   List<String> favorites = List<String>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
 
   var size;
@@ -56,7 +57,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
-    if (!loadData) LoadAdsAndFavorites();
+    if (!loadData) loadAdsAndFavorites();
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -88,7 +89,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Column(
                                     children: [
-                                      TextWithDot("Модель"),
+                                      textWithDot("Модель"),
                                       Container(
                                         width: size.width - 20,
                                         padding: EdgeInsets.only(
@@ -141,7 +142,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                           ),
                                         ),
                                       ),
-                                      TextWithDot("Матеріал"),
+                                      textWithDot("Матеріал"),
                                       Container(
                                         width: size.width - 20,
                                         padding: EdgeInsets.only(
@@ -194,7 +195,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                           ),
                                         ),
                                       ),
-                                      TextWithDot("Розмір"),
+                                      textWithDot("Розмір"),
                                       Row(
                                         children: [
                                           Container(
@@ -279,7 +280,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                           ),
                                         ],
                                       ),
-                                      TextWithDot("Ціна"),
+                                      textWithDot("Ціна"),
                                       Row(
                                         children: [
                                           Container(
@@ -402,7 +403,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
                                     child: Stack(
                                       children: [
                                         GestureDetector(
-                                          child: AdItem(listAds[i], size),
+                                          child: adItem(listAds[i], size),
                                           onTap: () {
                                             Navigator.push(
                                                 context,
@@ -472,7 +473,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
     );
   }
 
-  LoadAdsAndFavorites() async {
+  loadAdsAndFavorites() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _db = Firestore.instance;
     user = await _auth.currentUser();

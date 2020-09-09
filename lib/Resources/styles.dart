@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kapa_app/Core/hexColor.dart';
 
 import 'colors.dart';
 

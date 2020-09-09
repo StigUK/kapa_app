@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Resources/strings.dart';
 
 class MessagingService{

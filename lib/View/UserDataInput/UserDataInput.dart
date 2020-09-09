@@ -5,7 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Core/TextAreaValidator.dart';
-import 'package:kapa_app/Models/userinfo.dart';
+import 'package:kapa_app/Models/UserData.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
@@ -25,7 +25,6 @@ class _UserDataInputState extends State<UserDataInput> {
   bool _validate = false;
   bool dataLoaded = false;
 
-
   TextEditingController nameTEC = TextEditingController();
   TextEditingController cityTEC = TextEditingController();
   TextEditingController numberTEC = TextEditingController();
@@ -42,7 +41,7 @@ class _UserDataInputState extends State<UserDataInput> {
         return false;
       },
       child:  Scaffold(
-        body: SingleChildScrollView(
+        body: dataLoaded ? SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(top: 100),
             child: Center(
@@ -61,7 +60,7 @@ class _UserDataInputState extends State<UserDataInput> {
               ),
             ),
           ),
-        ),
+        ) : Center(child: CircularProgressIndicator(),),
         backgroundColor: appThemeBackgroundHexColor,
         bottomNavigationBar: Container(
           padding: EdgeInsets.all(20),
@@ -69,7 +68,7 @@ class _UserDataInputState extends State<UserDataInput> {
             height: 50.0,
             width: MediaQuery.of(context).size.width,
             child: RaisedButton(onPressed: (){
-              SendDataToFirestore();
+              sendDataToFirestore();
             },
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               child: Text('Готово', style: defaultTextStyle,),
@@ -165,7 +164,7 @@ class _UserDataInputState extends State<UserDataInput> {
     });
   }
 
-  SendDataToFirestore()
+  sendDataToFirestore()
   {
     if(_key.currentState.validate())
     {

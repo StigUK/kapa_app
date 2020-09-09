@@ -1,107 +1,131 @@
 import 'dart:ffi';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Services/customWebView.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
+import 'package:kapa_app/View/Widgets/SnackBar.dart';
 
-class AuthService
-{
+class AuthService {
   String verificationID;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String fb_your_client_id = "312374703243246";
-  String fb_your_redirect_url = "https://kapa-d04ea.firebaseapp.com/__/auth/handler";
+  FirestoreService fs = FirestoreService();
+  String fbYourClientId = "312374703243246";
+  String fbYourRedirectUrl = "https://kapa-d04ea.firebaseapp.com/__/auth/handler";
   BuildContext context;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   String name;
   String email;
   String imageUrl;
-
-  User _userFromFirebaseUser(FirebaseUser user)
-  {
-    return user !=null ? User(uid: user.uid) : null;
-  }
-
-  Future resetPass(String email)
-  async
-  {
-    try{
-      return await _auth.sendPasswordResetEmail(email: email);
-    }
-    catch(e)
-    {
-      print(e.toString());
-    }
-  }
+  MySnackBar snackBar = MySnackBar();
 
   handleAuth() {
     return StreamBuilder(
       stream: _auth.onAuthStateChanged,
-      builder: (context, snapshot)
-      {
-        if(snapshot.hasData){
+      builder: (context, snapshot) {
+        print("AUTH DATA HAS BEEN CHANGED");
+        if (snapshot.hasData) {
           return MainPage();
+        } else {
+          return LoginScreen();
         }
-        else
-          {
-            return LoginScreen();
-          }
       },
     );
   }
 
-  signOut()
-  {
-    _auth.signOut();
-    signOutGoogle();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginScreen(),
-      ),
-          (route) => false,
-    );
-  }
-
-  signInWithCredential(AuthCredential authCredential)
-  {
-    _auth.signInWithCredential(authCredential).then((AuthResult result){
-      print(result.user);
-    }).catchError((e){
-      print(e);
+  onUserDataChanged() {
+    FirebaseAuth.instance.onAuthStateChanged.listen((firebaseUser) {
+      print("USER DATA HAS BEEN CHANGED!");
     });
   }
 
-  signInWithOTP(smsCode, verID)
-  {
-    AuthCredential authCredential = PhoneAuthProvider.getCredential(verificationId: verificationID, smsCode: smsCode);
-    signInWithCredential(authCredential);
+  signOut() {
+    signOutGoogle();
+    _auth.signOut();
   }
 
-  Future<Void> verifyPhone(number) //async method for connect with google services and send sms to user
-  async
-  {
-    final PhoneVerificationCompleted verificationCompleted = (AuthCredential authResult)
-    {
-      AuthService().signInWithCredential(authResult);
+  signInWithCredential(AuthCredential authCredential, _context) async {
+    final verificationErrorMsg = () {
+      snackBar.showSnackBar(_context, "Не вірний код верифікації!");
+    };
+    final verificationSuccessMsg = () async {
+      await fs.onUserPhoneNumberVerify();
+      snackBar.showSnackBar(_context, "Номер успішно верифіковано!");
     };
 
-    final PhoneVerificationFailed verificationFailed = (AuthException authException)
-    {
+    final goToPopPage = () {
+      print("GO TO MAIN PAGE");
+      Navigator.pop(_context);
+    };
+    print("SIGN IN WITH CREDENTIAL");
+    final FirebaseUser user = await _auth.currentUser();
+    if (user != null) {
+      print("USER NOT NULL");
+      if (user.phoneNumber != null) {
+        user.updatePhoneNumberCredential(authCredential).whenComplete(() {
+          verificationSuccessMsg();
+          goToPopPage();
+        }).catchError((e) {
+          verificationErrorMsg();
+          print("Error:");
+          print(e);
+        });
+      } else {
+        user.linkWithCredential(authCredential).then((AuthResult result) {
+          verificationSuccessMsg();
+          goToPopPage();
+        }).catchError((e) {
+          verificationErrorMsg();
+          print(e);
+        });
+      }
+    } else {
+      print("USER NULL");
+      _auth.signInWithCredential(authCredential).then((AuthResult result) {
+        print(result.user);
+      }).catchError((e) {
+        verificationErrorMsg();
+        print(e);
+      });
+    }
+  }
+
+  signInWithOTP(smsCode, verID, _context) {
+    AuthCredential authCredential = PhoneAuthProvider.getCredential(
+        verificationId: verificationID, smsCode: smsCode);
+    signInWithCredential(authCredential, _context);
+  }
+
+  Future<Void> verifyPhone(number,
+      _context, isLogin) //async method for connect with google services and send sms to user
+  async {
+    final PhoneVerificationCompleted verificationCompleted =
+        (AuthCredential authResult) async {
+      signInWithCredential(authResult, _context);
+      print("Verification Completed");
+      if(isLogin)
+      await Future.delayed(const Duration(seconds : 1)).then((value){
+        Navigator.of(_context).pop();
+      });
+      return true;
+    };
+
+    final PhoneVerificationFailed verificationFailed =
+        (AuthException authException) {
       print('${authException.message}');
+      snackBar.showSnackBar(_context, "Сталась помилка при підтвердженні коду");
+      return false;
     };
 
-    final PhoneCodeSent smsSent = (String verId, [int forceResend])
-    {
+    final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
+      print("SMS sent");
+      snackBar.showSnackBar(_context, "Код верифікації відправлено!");
       this.verificationID = verId;
     };
 
-    final PhoneCodeAutoRetrievalTimeout autoRetrievalTimeout = (String verId)
-    {
+    final PhoneCodeAutoRetrievalTimeout autoRetrievalTimeout = (String verId) {
       this.verificationID = verId;
     };
     _auth.verifyPhoneNumber(
@@ -110,37 +134,32 @@ class AuthService
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
         codeSent: smsSent,
-        codeAutoRetrievalTimeout: autoRetrievalTimeout
-    );
+        codeAutoRetrievalTimeout: autoRetrievalTimeout);
   }
 
-  loginWithFacebook() async{
+  loginWithFacebook() async {
     String result = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => CustomWebView(
-            selectedUrl:
-            'https://www.facebook.com/dialog/oauth?client_id=$fb_your_client_id&redirect_uri=$fb_your_redirect_url&response_type=token&scope=email,public_profile,',
-          ),
+                selectedUrl:
+                    'https://www.facebook.com/dialog/oauth?client_id=$fbYourClientId&redirect_uri=$fbYourRedirectUrl&response_type=token&scope=email,public_profile,',
+              ),
           maintainState: true),
     );
     if (result != null) {
       try {
-            final facebookAuthCred = FacebookAuthProvider.getCredential(accessToken: result);
-            signInWithCredential(facebookAuthCred);
-          }
-          catch(e)
-          {
-
-          }
+        final facebookAuthCred =
+            FacebookAuthProvider.getCredential(accessToken: result);
+        signInWithCredential(facebookAuthCred, context);
+      } catch (e) {}
     }
   }
-
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
+        await googleSignInAccount.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleSignInAuthentication.accessToken,

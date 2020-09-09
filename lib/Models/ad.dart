@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kapa_app/Models/User.dart';
 import 'package:kapa_app/Models/boot.dart';
 
 class Ad

@@ -4,7 +4,7 @@ import 'package:kapa_app/Models/ad.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 
-Widget AdItem(Ad _ad, size)
+Widget adItem(Ad _ad, size)
 {
   return Stack(
     children: [

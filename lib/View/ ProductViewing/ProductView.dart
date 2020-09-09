@@ -1,11 +1,11 @@
-import 'package:carousel_pro/carousel_pro.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Data/PickersData.dart';
 import 'package:kapa_app/Models/ad.dart';
-import 'package:kapa_app/Models/userinfo.dart';
+import 'package:kapa_app/Models/UserData.dart';
 import 'package:kapa_app/Resources/colors.dart';
 import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
@@ -15,6 +15,7 @@ import 'package:kapa_app/View/Widgets/FullScreenImagesView.dart';
 import 'package:kapa_app/View/Widgets/ImagesCarousel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class ProductView extends StatefulWidget {
 
   Ad ad;

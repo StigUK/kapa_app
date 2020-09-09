@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-class roundedContainer extends StatelessWidget {
+class RoundedContainer extends StatelessWidget {
 
   bool loading = true;
   var childWidget;
 
-  roundedContainer({this.childWidget});
+  RoundedContainer({this.childWidget});
 
   @override
   Widget build(BuildContext context) {
