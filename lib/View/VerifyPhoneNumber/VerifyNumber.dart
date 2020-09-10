@@ -39,6 +39,9 @@ class _VerifyNumberState extends State<VerifyNumber> {
     {
       phoneTEC.text = number;
     }
+    else{
+      phoneTEC.text="+380";
+    }
   }
 
   @override

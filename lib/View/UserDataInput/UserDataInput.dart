@@ -157,6 +157,7 @@ class _UserDataInputState extends State<UserDataInput> {
     setState(() {
       print("SET STATE");
       numberTEC.text = user.phoneNumber;
+      if(user.phoneNumber=="") numberTEC.text = '+380';
       nameTEC.text = user.displayName;
       photoURL = user.photoUrl;
       dataLoaded = true;
