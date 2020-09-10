@@ -8,6 +8,7 @@ import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/LoginPage/Login.dart';
 import 'package:kapa_app/View/MainPage/Pages/AccountInfo/AccountInfoEdit.dart';
+import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class AccountInfo extends StatefulWidget {
@@ -97,7 +98,7 @@ class _AccountInfoState extends State<AccountInfo> {
                       Text("Номер не підтверджено!", style: TextStyle(color: defaultTextColor, fontSize: 11.0)),
                       FlatButton(
                         onPressed:(){
-
+                          goToVerifyNumberPage();
                         },
                         child: Text("Підтвердити", style: TextStyle(color: appThemeBlueMainColor, fontSize: 11.0)),
                       )
@@ -133,8 +134,7 @@ class _AccountInfoState extends State<AccountInfo> {
                         //FirestoreService fs = FirestoreService();
                         //final FirebaseMessaging _messaging = FirebaseMessaging();
                         //await fs.deleteNotificationToken(_messaging.getToken());
-                        AuthService authService = AuthService();
-                        await authService.signOut();
+                        logOut();
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
@@ -150,6 +150,16 @@ class _AccountInfoState extends State<AccountInfo> {
         : Container(
             height: size.height,
             child: Center(child: CircularProgressIndicator()));
+  }
+
+  void logOut() async{
+    AuthService authService = AuthService();
+    authService.signOutGoogle();
+    authService.signOut();
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+        builder: (BuildContext context) => authService.handleAuth()),
+            (route) => false
+    );
   }
 
   getUserData() async {
@@ -176,9 +186,21 @@ class _AccountInfoState extends State<AccountInfo> {
     catch(e){
       print(e);
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-          builder: (BuildContext context) => LoginScreen()),
+          builder: (BuildContext context) => LoginPage()),
               (route) => false
       );
     }
+  }
+
+  goToVerifyNumberPage()
+  async{
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => VerifyNumber(isLogin: false, number: _userData.phoneNumber)),
+    );
+    setState(() {
+      isLoad = false;
+    });
   }
 }

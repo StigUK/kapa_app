@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kapa_app/Resources/colors.dart';
-import 'package:kapa_app/View/Widgets/ImagesCarousel.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 

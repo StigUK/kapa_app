@@ -4,7 +4,10 @@ validateTextArea(String value)
   {
     return 'Це поле не може бути порожнім';
   }
-  else return null;
+  if(value.length > 40){
+    return 'Максимум 40 символів';
+  }
+  return null;
 }
 
 String validateMobile(String value) {

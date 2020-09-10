@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 class RoundedContainer extends StatelessWidget {
 
-  bool loading = true;
-  var childWidget;
+  final bool loading = true;
+  final Widget childWidget;
 
   RoundedContainer({this.childWidget});
 

@@ -15,11 +15,13 @@ import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
 import 'package:kapa_app/View/Widgets/SnackBar.dart';
 
 class AccountInfoEdit extends StatefulWidget {
-  String image;
-  String name;
-  String number;
-  String city;
+
   AccountInfoEdit({this.name, this.image, this.number, this.city});
+
+  final String image;
+  final String name;
+  final String number;
+  final String city;
 
   @override
   _AccountInfoEditState createState()
@@ -32,7 +34,7 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
   _AccountInfoEditState({this.name, this.image, this.number, this.city});
   GlobalKey<FormState> _key = GlobalKey();
   bool _validate = false;
-
+  bool imageLoaded = true;
   BuildContext bodyContext;
 
   TextEditingController nameTEC = TextEditingController();
@@ -72,9 +74,13 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [
+                            !imageLoaded ? CircleAvatar(
+                              radius: 60,
+                              child: CircularProgressIndicator(),
+                            )  :
                             CircleAvatar(
                               radius: 60,
-                              backgroundImage: image !=null ? NetworkImage(image) : AssetImage("assets/images/MainPage/anonymous-user.png"),
+                              backgroundImage: image !=null ? NetworkImage(image): AssetImage("assets/images/MainPage/anonymous-user.png"),
                             ),
                             CircleAvatar(
                               child: FlatButton(
@@ -203,21 +209,22 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
       final FirebaseUser user = await _auth.currentUser();
       FirestoreService fs = FirestoreService();
       UserData userData;
+      MySnackBar snackBar = MySnackBar();
+      if(imageLoaded)
       if(user.phoneNumber == numberTEC.text)
-      {
-        userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text, image: image);
-        fs.setUserInfo(userData);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MainPage()
-          ),
-        );
-      }
-      else {
-        MySnackBar snackBar = MySnackBar();
-        snackBar.showPhoneVerifySnackBar(bodyContext, goToVerifyPhone);
-      }
+        {
+          userData = UserData(name: nameTEC.text, phoneNumber: numberTEC.text, city: cityTEC.text, image: image);
+          fs.setUserInfo(userData);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MainPage()
+            ),
+          );
+        }
+        else
+          snackBar.showPhoneVerifySnackBar(bodyContext, goToVerifyPhone);
+      else snackBar.showSnackBar(bodyContext, "Зачекайте доки зображення завантажиться");
     }
     else
       setState(() {
@@ -233,23 +240,31 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
     );
   }
 
-  Future<String> uploadPic() async {
+  Future<void> uploadPic() async {
     File image;
     try {
+      // ignore: deprecated_member_use
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
     } on PlatformException catch (e) {
       print(e);
       return null;
     }
+    if(image!=null)
+      {
+        setState(() {
+          imageLoaded=false;
+        });
+        String filePath = 'profileImages/${DateTime.now()}.png';
+        StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
+        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+        String url = await taskSnapshot.ref.getDownloadURL();
+        setState(() {
+          this.image = url;
+          imageLoaded = true;
+          print(url);
+        });
+      }
     //StorageReference reference = _storage.ref().child(image.path.split('/').last);
-    String filePath = 'profileImages/${DateTime.now()}.png';
-    StorageUploadTask uploadTask = _storage.ref().child(filePath).putFile(image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    String url = await taskSnapshot.ref.getDownloadURL();
-    setState(() {
-      this.image = url;
-      print(url);
-    });
   }
 
 }

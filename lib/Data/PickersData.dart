@@ -23,8 +23,8 @@ const PickerData2 = '''
 const SizeTypeFull = '''
 [
     [
-        "Британський GB",
         "Європейський EU",
+        "Британський GB",
         "Український UA"
     ]
 ]
@@ -70,7 +70,7 @@ const BootMaterial = '''
 ]
 ''';
 
-const SizeType = ['GB','EU','UA'];
+const SizeType = ['EU','GB','UA'];
 
 const EUSizes = '''
 [

@@ -21,7 +21,7 @@ class Ad
 
   factory Ad.fromDocument(DocumentSnapshot doc) {
     Boot boot = Boot();
-    boot.sizeType = 2;
+    boot.sizeType = doc['boot']['sizeType'];
     boot.size = doc['boot']['size'];
     boot.width  = doc['boot']['width'];
     boot.height  = doc['boot']['height'];

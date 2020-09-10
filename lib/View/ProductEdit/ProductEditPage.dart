@@ -16,10 +16,11 @@ import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
 import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
+import 'package:kapa_app/View/Widgets/SnackBar.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
 class ProductEditPage extends StatefulWidget {
-  Ad ad;
+  final Ad ad;
   ProductEditPage({this.ad});
   @override
   _ProductEditPageState createState() {
@@ -49,9 +50,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
   var descriptionTEC;
   var sizeOfContainer;
 
+  MySnackBar snackBar = MySnackBar();
+
   String error = "";
 
-  String uniqAd = DateTime.now().toString();
+  BuildContext _context;
+
+  String uniqueAd = DateTime.now().toString();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               onPressed: () {
                 if (checkFields() == true) {
                   showDialog(
-                      context: context,
+                      context: _context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           backgroundColor: appThemeAdditionalHexColor,
@@ -133,104 +138,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   style: TextStyle(color: appThemeBlueMainColor)))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.only(top: 10),
-          child: Column(
-            children: <Widget>[
-              //Зображення
-              textWithDot("Додати фото"),
-              gridImages(),
-              //Розміри
-              textWithDot("Розміри"),
-              bootSizes(),
-              //Модель
-              textWithDot("Модель"),
-              Container(
-                width: size.width - 20,
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: decorationForContainerWithBorder_bottom,
-                child: InkWell(
-                  onTap: () {
-                    universalPicker(1, ModelsNames);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(bootModelName,
-                        style: defaultTextStyle, textAlign: TextAlign.start),
-                  ),
-                ),
-              ),
-              //Матераіал
-              textWithDot("Матеріал"),
-              Container(
-                width: size.width - 20,
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: decorationForContainerWithBorder_bottom,
-                child: InkWell(
-                  onTap: () {
-                    universalPicker(2, BootMaterial);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(bootMaterial,
-                        style: defaultTextStyle, textAlign: TextAlign.start),
-                  ),
-                ),
-              ),
-              //Опис
-              textWithDot("Опис"),
-              Container(
-                width: size.width - 20,
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: decorationForContainerWithBorder_bottom,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: descriptionTEC,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      bootDescription = value;
-                    },
-                    maxLength: 300,
-                    maxLines: 5,
-                  ),
-                ),
-              ),
-              //Ціна
-              textWithDot("Ціна"),
-              Container(
-                  width: size.width - 20,
-                  padding: EdgeInsets.only(right: 10, left: 10),
-                  decoration: decorationForContainerWithBorder_bottom,
-                  child: TextField(
-                    //controller: priceTEC,
-                    onChanged: (value) {
-                      if (value != "")
-                        bootPrice = double.parse(value);
-                      else
-                        bootPrice = 0.0;
-                    },
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
-                    style: defaultTextStyle,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      counterText: "",
-                      hintText: bootPrice.toString(),
-                    ),
-                    maxLines: 1,
-                  )),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: showErrorText(error),
-              )
-            ],
-          ),
-        ),
-      ),
+      body: scaffoldBody(),
     );
   }
 
@@ -253,6 +161,112 @@ class _ProductEditPageState extends State<ProductEditPage> {
           return EUSizes;
         }
     }
+  }
+
+  Widget scaffoldBody(){
+    return Builder(
+      builder: (BuildContext buildContext){
+        _context = buildContext;
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(top: 10),
+            child: Column(
+              children: <Widget>[
+                //Зображення
+                textWithDot("Додати фото"),
+                gridImages(),
+                //Розміри
+                textWithDot("Розміри"),
+                bootSizes(),
+                //Модель
+                textWithDot("Модель"),
+                Container(
+                  width: size.width - 20,
+                  padding: EdgeInsets.only(right: 10, left: 10),
+                  decoration: decorationForContainerWithBorder_bottom,
+                  child: InkWell(
+                    onTap: () {
+                      universalPicker(1, ModelsNames);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(bootModelName,
+                          style: defaultTextStyle, textAlign: TextAlign.start),
+                    ),
+                  ),
+                ),
+                //Матераіал
+                textWithDot("Матеріал"),
+                Container(
+                  width: size.width - 20,
+                  padding: EdgeInsets.only(right: 10, left: 10),
+                  decoration: decorationForContainerWithBorder_bottom,
+                  child: InkWell(
+                    onTap: () {
+                      universalPicker(2, BootMaterial);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(bootMaterial,
+                          style: defaultTextStyle, textAlign: TextAlign.start),
+                    ),
+                  ),
+                ),
+                //Опис
+                textWithDot("Опис"),
+                Container(
+                  width: size.width - 20,
+                  padding: EdgeInsets.only(right: 10, left: 10),
+                  decoration: decorationForContainerWithBorder_bottom,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: descriptionTEC,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        bootDescription = value;
+                      },
+                      maxLength: 300,
+                      maxLines: 5,
+                    ),
+                  ),
+                ),
+                //Ціна
+                textWithDot("Ціна"),
+                Container(
+                    width: size.width - 20,
+                    padding: EdgeInsets.only(right: 10, left: 10),
+                    decoration: decorationForContainerWithBorder_bottom,
+                    child: TextField(
+                      //controller: priceTEC,
+                      onChanged: (value) {
+                        if (value != "")
+                          bootPrice = double.parse(value);
+                        else
+                          bootPrice = 0.0;
+                      },
+                      keyboardType: TextInputType.number,
+                      maxLength: 10,
+                      style: defaultTextStyle,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        counterText: "",
+                        hintText: bootPrice.toString(),
+                      ),
+                      maxLines: 1,
+                    )),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Container(),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget bootSizes() {
@@ -293,7 +307,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 padding: EdgeInsets.all(0),
                                 child: FlatButton(
                                   onPressed: () {
-                                    sizePicker(context);
+                                    sizePicker(_context);
                                   },
                                   child: Text(bootSize.toString(),
                                       style: defaultTextStyle),
@@ -479,7 +493,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       );
   }
 
-  sizePicker(BuildContext context) {
+  sizePicker(BuildContext buildContext) {
     Picker(
         cancelText: "Відміна",
         confirmText: "Застосувати",
@@ -497,7 +511,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
           setState(() {
             bootSize = double.parse(picker.getSelectedValues()[0]);
           });
-        }).showDialog(context);
+        }).showDialog(_context);
   }
 
   universalPicker(returnVarialble, pickerData) {
@@ -533,7 +547,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 }
             }
           });
-        }).showDialog(context);
+        }).showDialog(_context);
   }
 
   bool checkFields() {
@@ -550,6 +564,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       setState(() {
         error = "Додайте хоча б одне фото";
       });
+      showSnackBar();
       return false;
     }
     print("Elements: ");
@@ -558,6 +573,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         setState(() {
           error = "Зачекайте доки зображення завантажиться";
         });
+        showSnackBar();
         return false;
       }
     }
@@ -566,6 +582,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       setState(() {
         error = "Заповніть всі поля";
       });
+      showSnackBar();
       return false;
     }
     setState(() {
@@ -599,7 +616,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
       modelName: bootModelName,
     );
     Ad _ad = Ad(images: images, boot: bt, userId: user.uid, active: true);
-    ad == null ? fs.addNewAd(_ad) : fs.editAd(_ad);
+    if(ad==null)
+      fs.addNewAd(_ad);
+    else
+      {
+        _ad.key = ad.key;
+        fs.editAd(_ad);
+      }
   }
 
   initializeFields() {
@@ -621,9 +644,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
           });
   }
 
-  Future<String> uploadPic() async {
+  Future<void> uploadPic() async {
     File image;
     try {
+      // ignore: deprecated_member_use
       image = await ImagePicker.pickImage(source: ImageSource.gallery);
     } on PlatformException catch (e) {
       print(e);
@@ -635,7 +659,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       });
       /*StorageReference reference =
           _storage.ref().child(image.path.split('/').last);*/
-      String filePath = 'images/$uniqAd/${DateTime.now()}.png';
+      String filePath = 'images/$uniqueAd/${DateTime.now()}.png';
       StorageUploadTask uploadTask =
           _storage.ref().child(filePath).putFile(image);
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
@@ -645,6 +669,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
         images.add(url);
         print(url);
       });
-    } else {}
+    }
+  }
+
+  showSnackBar(){
+    snackBar.showSnackBar(_context, error);
   }
 }

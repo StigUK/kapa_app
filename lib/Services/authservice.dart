@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,16 +28,10 @@ class AuthService {
         if (snapshot.hasData) {
           return MainPage();
         } else {
-          return LoginScreen();
+          return LoginPage();
         }
       },
     );
-  }
-
-  onUserDataChanged() {
-    FirebaseAuth.instance.onAuthStateChanged.listen((firebaseUser) {
-      print("USER DATA HAS BEEN CHANGED!");
-    });
   }
 
   signOut() {
@@ -59,10 +52,8 @@ class AuthService {
       print("GO TO MAIN PAGE");
       Navigator.pop(_context);
     };
-    print("SIGN IN WITH CREDENTIAL");
     final FirebaseUser user = await _auth.currentUser();
     if (user != null) {
-      print("USER NOT NULL");
       if (user.phoneNumber != null) {
         user.updatePhoneNumberCredential(authCredential).whenComplete(() {
           verificationSuccessMsg();
@@ -82,7 +73,6 @@ class AuthService {
         });
       }
     } else {
-      print("USER NULL");
       _auth.signInWithCredential(authCredential).then((AuthResult result) {
         print(result.user);
       }).catchError((e) {
@@ -98,7 +88,7 @@ class AuthService {
     signInWithCredential(authCredential, _context);
   }
 
-  Future<Void> verifyPhone(number,
+  Future<void> verifyPhone(number,
       _context, isLogin) //async method for connect with google services and send sms to user
   async {
     final PhoneVerificationCompleted verificationCompleted =
@@ -168,7 +158,7 @@ class AuthService {
 
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult.user;
-
+    /*
     // Checking if email and name is null
     assert(user.email != null);
     assert(user.displayName != null);
@@ -185,7 +175,7 @@ class AuthService {
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
-
+    */
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
 

@@ -66,319 +66,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
               padding: const EdgeInsets.only(left: 10),
               child: Row(
                 children: <Widget>[
-                  IconButton(
-                    alignment: Alignment.bottomLeft,
-                    icon: Icon(const IconData(0xe900, fontFamily: 'kopa')),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (BuildContext context,
-                                  StateSetter setFilterState) {
-                                if (!initialized) {
-                                  setFilterState(() {
-                                    initializeFilterFields();
-                                  });
-                                }
-                                return Container(
-                                  height: 450,
-                                  padding: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Column(
-                                    children: [
-                                      textWithDot("Модель"),
-                                      Container(
-                                        width: size.width - 20,
-                                        padding: EdgeInsets.only(
-                                            right: 10, left: 10),
-                                        decoration:
-                                            decorationForContainerWithBorder_bottom,
-                                        child: InkWell(
-                                          onTap: () {
-                                            Picker(
-                                                cancelText: "Відміна",
-                                                confirmText: "Застосувати",
-                                                adapter: PickerDataAdapter<
-                                                        String>(
-                                                    pickerdata:
-                                                        new JsonDecoder()
-                                                            .convert(
-                                                                ModelsNames),
-                                                    isArray: true),
-                                                hideHeader: true,
-                                                backgroundColor:
-                                                    appThemePickerBackgroundColor,
-                                                containerColor:
-                                                    appThemePickerBackgroundColor,
-                                                textStyle: defaultTextStyle,
-                                                cancelTextStyle: TextStyle(
-                                                    color:
-                                                        appThemeBlueMainColor),
-                                                selectedTextStyle:
-                                                    defaultTextStyle,
-                                                confirmTextStyle: TextStyle(
-                                                    color:
-                                                        appThemeBlueMainColor),
-                                                onConfirm: (Picker picker,
-                                                    List value) {
-                                                  setFilterState(() {
-                                                    bootModel = picker
-                                                        .getSelectedValues()
-                                                        .first;
-                                                  });
-                                                }).showDialog(context);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                                bootModel != null
-                                                    ? bootModel
-                                                    : "",
-                                                style: defaultTextStyle,
-                                                textAlign: TextAlign.start),
-                                          ),
-                                        ),
-                                      ),
-                                      textWithDot("Матеріал"),
-                                      Container(
-                                        width: size.width - 20,
-                                        padding: EdgeInsets.only(
-                                            right: 10, left: 10),
-                                        decoration:
-                                            decorationForContainerWithBorder_bottom,
-                                        child: InkWell(
-                                          onTap: () {
-                                            Picker(
-                                                cancelText: "Відміна",
-                                                confirmText: "Застосувати",
-                                                adapter: PickerDataAdapter<
-                                                        String>(
-                                                    pickerdata:
-                                                        new JsonDecoder()
-                                                            .convert(
-                                                                BootMaterial),
-                                                    isArray: true),
-                                                hideHeader: true,
-                                                backgroundColor:
-                                                    appThemePickerBackgroundColor,
-                                                containerColor:
-                                                    appThemePickerBackgroundColor,
-                                                textStyle: defaultTextStyle,
-                                                cancelTextStyle: TextStyle(
-                                                    color:
-                                                        appThemeBlueMainColor),
-                                                selectedTextStyle:
-                                                    defaultTextStyle,
-                                                confirmTextStyle: TextStyle(
-                                                    color:
-                                                        appThemeBlueMainColor),
-                                                onConfirm: (Picker picker,
-                                                    List value) {
-                                                  setFilterState(() {
-                                                    bootMaterial = picker
-                                                        .getSelectedValues()
-                                                        .first;
-                                                  });
-                                                }).showDialog(context);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                                bootMaterial != null
-                                                    ? bootMaterial
-                                                    : "",
-                                                style: defaultTextStyle,
-                                                textAlign: TextAlign.start),
-                                          ),
-                                        ),
-                                      ),
-                                      textWithDot("Розмір"),
-                                      Row(
-                                        children: [
-                                          Container(
-                                              width: size.width * 0.3,
-                                              padding: EdgeInsets.only(
-                                                  right: 20, left: 10),
-                                              decoration:
-                                                  decorationForContainerWithBorder_bottom,
-                                              child: TextField(
-                                                controller: sizeF,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                maxLength: 10,
-                                                style: defaultTextStyle,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  counterText: "",
-                                                ),
-                                                maxLines: 1,
-                                              )),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          Container(
-                                              width: size.width * 0.3,
-                                              padding: EdgeInsets.only(
-                                                  right: 20, left: 20),
-                                              decoration:
-                                                  decorationForContainerWithBorder_bottom,
-                                              child: TextField(
-                                                controller: sizeT,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                maxLength: 10,
-                                                style: defaultTextStyle,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  counterText: "",
-                                                ),
-                                                maxLines: 1,
-                                              )),
-                                          Container(
-                                            width: size.width * 0.15,
-                                            child: FlatButton(
-                                              onPressed: () {
-                                                Picker(
-                                                    cancelText: "Відміна",
-                                                    confirmText: "Застосувати",
-                                                    adapter: PickerDataAdapter<
-                                                            String>(
-                                                        pickerdata: new JsonDecoder()
-                                                            .convert(
-                                                                SizeTypeFull),
-                                                        isArray: true),
-                                                    hideHeader: true,
-                                                    backgroundColor:
-                                                        appThemePickerBackgroundColor,
-                                                    containerColor:
-                                                        appThemePickerBackgroundColor,
-                                                    textStyle: defaultTextStyle,
-                                                    cancelTextStyle: TextStyle(
-                                                        color:
-                                                            appThemeBlueMainColor),
-                                                    selectedTextStyle:
-                                                        defaultTextStyle,
-                                                    confirmTextStyle: TextStyle(
-                                                        color:
-                                                            appThemeBlueMainColor),
-                                                    onConfirm: (Picker picker,
-                                                        List value) {
-                                                      setFilterState(() {
-                                                        bootSizeType =
-                                                            int.parse(value[0]
-                                                                .toString());
-                                                      });
-                                                    }).showDialog(context);
-                                              },
-                                              child: Text(
-                                                  SizeType[bootSizeType],
-                                                  style: defaultTextStyle),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      textWithDot("Ціна"),
-                                      Row(
-                                        children: [
-                                          Container(
-                                              width: size.width * 0.3,
-                                              padding: EdgeInsets.only(
-                                                  right: 20, left: 10),
-                                              decoration:
-                                                  decorationForContainerWithBorder_bottom,
-                                              child: TextField(
-                                                controller: priceF,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                maxLength: 10,
-                                                style: defaultTextStyle,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  counterText: "",
-                                                ),
-                                                maxLines: 1,
-                                              )),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          Container(
-                                              width: size.width * 0.3,
-                                              padding: EdgeInsets.only(
-                                                  right: 20, left: 20),
-                                              decoration:
-                                                  decorationForContainerWithBorder_bottom,
-                                              child: TextField(
-                                                controller: priceT,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                maxLength: 10,
-                                                style: defaultTextStyle,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  counterText: "",
-                                                ),
-                                                maxLines: 1,
-                                              )),
-                                        ],
-                                      ),
-
-                                      ///Buttons
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 40),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            FlatButton(
-                                              onPressed: () {
-                                                setFilterState(() {
-                                                  bootModel = null;
-                                                  bootMaterial = null;
-                                                  bootSizeType = 0;
-                                                  priceF =
-                                                      TextEditingController();
-                                                  priceT =
-                                                      TextEditingController();
-                                                  sizeF =
-                                                      TextEditingController();
-                                                  sizeT =
-                                                      TextEditingController();
-                                                });
-                                              },
-                                              child: Text("СКИНУТИ",
-                                                  style: TextStyle(
-                                                      color:
-                                                          appThemeBlueMainColor)),
-                                            ),
-                                            FlatButton(
-                                              onPressed: () {
-                                                checkFilterFields();
-                                                initialized = false;
-                                                setState(() {
-                                                  filterEnable = false;
-                                                });
-                                                enableFilter();
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text("ЗАСТОСУВАТИ",
-                                                  style: TextStyle(
-                                                      color:
-                                                          appThemeBlueMainColor)),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          });
-                    },
-                  ),
+                  filterButton(),
                   Expanded(
                     child: Container(),
                   ),
@@ -473,6 +161,322 @@ class _AllBootsListViewState extends State<AllBootsListView> {
     );
   }
 
+  Widget filterButton(){
+    return IconButton(
+      alignment: Alignment.bottomLeft,
+      icon: Icon(const IconData(0xe900, fontFamily: 'kopa')),
+      onPressed: () {
+        showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (BuildContext context,
+                    StateSetter setFilterState) {
+                  if (!initialized) {
+                    setFilterState(() {
+                      initializeFilterFields();
+                    });
+                  }
+                  return Container(
+                    height: 450,
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Column(
+                      children: [
+                        textWithDot("Модель"),
+                        Container(
+                          width: size.width - 20,
+                          padding: EdgeInsets.only(
+                              right: 10, left: 10),
+                          decoration:
+                          decorationForContainerWithBorder_bottom,
+                          child: InkWell(
+                            onTap: () {
+                              Picker(
+                                  cancelText: "Відміна",
+                                  confirmText: "Застосувати",
+                                  adapter: PickerDataAdapter<
+                                      String>(
+                                      pickerdata:
+                                      new JsonDecoder()
+                                          .convert(
+                                          ModelsNames),
+                                      isArray: true),
+                                  hideHeader: true,
+                                  backgroundColor:
+                                  appThemePickerBackgroundColor,
+                                  containerColor:
+                                  appThemePickerBackgroundColor,
+                                  textStyle: defaultTextStyle,
+                                  cancelTextStyle: TextStyle(
+                                      color:
+                                      appThemeBlueMainColor),
+                                  selectedTextStyle:
+                                  defaultTextStyle,
+                                  confirmTextStyle: TextStyle(
+                                      color:
+                                      appThemeBlueMainColor),
+                                  onConfirm: (Picker picker,
+                                      List value) {
+                                    setFilterState(() {
+                                      bootModel = picker
+                                          .getSelectedValues()
+                                          .first;
+                                    });
+                                  }).showDialog(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  bootModel != null
+                                      ? bootModel
+                                      : "",
+                                  style: defaultTextStyle,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                        ),
+                        textWithDot("Матеріал"),
+                        Container(
+                          width: size.width - 20,
+                          padding: EdgeInsets.only(
+                              right: 10, left: 10),
+                          decoration:
+                          decorationForContainerWithBorder_bottom,
+                          child: InkWell(
+                            onTap: () {
+                              Picker(
+                                  cancelText: "Відміна",
+                                  confirmText: "Застосувати",
+                                  adapter: PickerDataAdapter<
+                                      String>(
+                                      pickerdata:
+                                      new JsonDecoder()
+                                          .convert(
+                                          BootMaterial),
+                                      isArray: true),
+                                  hideHeader: true,
+                                  backgroundColor:
+                                  appThemePickerBackgroundColor,
+                                  containerColor:
+                                  appThemePickerBackgroundColor,
+                                  textStyle: defaultTextStyle,
+                                  cancelTextStyle: TextStyle(
+                                      color:
+                                      appThemeBlueMainColor),
+                                  selectedTextStyle:
+                                  defaultTextStyle,
+                                  confirmTextStyle: TextStyle(
+                                      color:
+                                      appThemeBlueMainColor),
+                                  onConfirm: (Picker picker,
+                                      List value) {
+                                    setFilterState(() {
+                                      bootMaterial = picker
+                                          .getSelectedValues()
+                                          .first;
+                                    });
+                                  }).showDialog(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  bootMaterial != null
+                                      ? bootMaterial
+                                      : "",
+                                  style: defaultTextStyle,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                        ),
+                        textWithDot("Розмір"),
+                        Row(
+                          children: [
+                            Container(
+                                width: size.width * 0.3,
+                                padding: EdgeInsets.only(
+                                    right: 20, left: 10),
+                                decoration:
+                                decorationForContainerWithBorder_bottom,
+                                child: TextField(
+                                  controller: sizeF,
+                                  keyboardType:
+                                  TextInputType.number,
+                                  maxLength: 10,
+                                  style: defaultTextStyle,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    counterText: "",
+                                  ),
+                                  maxLines: 1,
+                                )),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                                width: size.width * 0.3,
+                                padding: EdgeInsets.only(
+                                    right: 20, left: 20),
+                                decoration:
+                                decorationForContainerWithBorder_bottom,
+                                child: TextField(
+                                  controller: sizeT,
+                                  keyboardType:
+                                  TextInputType.number,
+                                  maxLength: 10,
+                                  style: defaultTextStyle,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    counterText: "",
+                                  ),
+                                  maxLines: 1,
+                                )),
+                            Container(
+                              width: size.width * 0.15,
+                              child: FlatButton(
+                                onPressed: () {
+                                  Picker(
+                                      cancelText: "Відміна",
+                                      confirmText: "Застосувати",
+                                      adapter: PickerDataAdapter<
+                                          String>(
+                                          pickerdata: new JsonDecoder()
+                                              .convert(
+                                              SizeTypeFull),
+                                          isArray: true),
+                                      hideHeader: true,
+                                      backgroundColor:
+                                      appThemePickerBackgroundColor,
+                                      containerColor:
+                                      appThemePickerBackgroundColor,
+                                      textStyle: defaultTextStyle,
+                                      cancelTextStyle: TextStyle(
+                                          color:
+                                          appThemeBlueMainColor),
+                                      selectedTextStyle:
+                                      defaultTextStyle,
+                                      confirmTextStyle: TextStyle(
+                                          color:
+                                          appThemeBlueMainColor),
+                                      onConfirm: (Picker picker,
+                                          List value) {
+                                        setFilterState(() {
+                                          bootSizeType =
+                                              int.parse(value[0]
+                                                  .toString());
+                                        });
+                                      }).showDialog(context);
+                                },
+                                child: Text(
+                                    SizeType[bootSizeType],
+                                    style: defaultTextStyle),
+                              ),
+                            ),
+                          ],
+                        ),
+                        textWithDot("Ціна"),
+                        Row(
+                          children: [
+                            Container(
+                                width: size.width * 0.3,
+                                padding: EdgeInsets.only(
+                                    right: 20, left: 10),
+                                decoration:
+                                decorationForContainerWithBorder_bottom,
+                                child: TextField(
+                                  controller: priceF,
+                                  keyboardType:
+                                  TextInputType.number,
+                                  maxLength: 10,
+                                  style: defaultTextStyle,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    counterText: "",
+                                  ),
+                                  maxLines: 1,
+                                )),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                                width: size.width * 0.3,
+                                padding: EdgeInsets.only(
+                                    right: 20, left: 20),
+                                decoration:
+                                decorationForContainerWithBorder_bottom,
+                                child: TextField(
+                                  controller: priceT,
+                                  keyboardType:
+                                  TextInputType.number,
+                                  maxLength: 10,
+                                  style: defaultTextStyle,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    counterText: "",
+                                  ),
+                                  maxLines: 1,
+                                )),
+                          ],
+                        ),
+
+                        ///Buttons
+                        Padding(
+                          padding: EdgeInsets.only(top: 40),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.end,
+                            children: [
+                              FlatButton(
+                                onPressed: () {
+                                  setFilterState(() {
+                                    bootModel = null;
+                                    bootMaterial = null;
+                                    bootSizeType = 0;
+                                    priceF =
+                                        TextEditingController();
+                                    priceT =
+                                        TextEditingController();
+                                    sizeF =
+                                        TextEditingController();
+                                    sizeT =
+                                        TextEditingController();
+                                  });
+                                },
+                                child: Text("СКИНУТИ",
+                                    style: TextStyle(
+                                        color:
+                                        appThemeBlueMainColor)),
+                              ),
+                              FlatButton(
+                                onPressed: () {
+                                  checkFilterFields();
+                                  initialized = false;
+                                  setState(() {
+                                    filterEnable = false;
+                                  });
+                                  enableFilter();
+                                  Navigator.pop(context);
+                                },
+                                child: Text("ЗАСТОСУВАТИ",
+                                    style: TextStyle(
+                                        color:
+                                        appThemeBlueMainColor)),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              );
+            });
+      },
+    );
+  }
+
   loadAdsAndFavorites() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final Firestore _db = Firestore.instance;
@@ -508,6 +512,7 @@ class _AllBootsListViewState extends State<AllBootsListView> {
       if (filterModel(element) &&
           filterMaterial(element) &&
           filterSize(element) &&
+          filterSizeType(element) &&
           filterPrice(element)) listAds.add(element);
     });
   }
@@ -520,6 +525,16 @@ class _AllBootsListViewState extends State<AllBootsListView> {
         return false;
     }
     return true;
+  }
+
+  bool filterSizeType(Ad ad){
+    if(dataFilter['sizeType']!=null)
+      {
+        if(dataFilter['sizeType'] == ad.boot.sizeType)
+          return true;
+        else return false;
+      }
+    else return true;
   }
 
   bool filterMaterial(Ad ad) {

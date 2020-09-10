@@ -192,22 +192,21 @@ class _ProductViewState extends State<ProductView> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(_userData.name, style: defaultTextStyle),
-                      ),
-                      Text(_userData.city, style: smallTextStyle),
-                    ],
-                  ),
-                ),
                 Expanded(
-                  child: Container(),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(_userData.name, style: defaultTextStyle),
+                        ),
+                        Text(_userData.city, style: smallTextStyle),
+                      ],
+                    ),
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.call),

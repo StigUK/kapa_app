@@ -5,12 +5,12 @@ import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/View/LoginPage/Widgets/PictureWithText.dart';
 import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginPage> {
   var size;
   bool phone = true;
   bool codeSend = false;

@@ -13,9 +13,12 @@ class FirestoreService {
 
   addNewAd(Ad _ad) async {
     await _db.collection('ads').add(_ad.toMap());
+    print("Added new document");
   }
 
   editAd(Ad _ad) async {
+    print("EDIT document, id: ");
+    print(_ad.key);
     await _db.collection('ads').document(_ad.key).setData(_ad.toMap());
   }
 
@@ -62,24 +65,6 @@ class FirestoreService {
         phoneNumber: value.data['phoneNumber'],
         image: value.data['image'],
       );*/
-    });
-  }
-
-  Future<bool> checkUserDataExist() async {
-    final FirebaseUser user = await _auth.currentUser();
-    await _db.collection('userdata').document(user.uid).get().then((value) {
-      if (value.data != null) {
-        UserData _userData = UserData(
-            name: value.data['name'],
-            city: value.data['city'],
-            phoneNumber: value.data['phoneNumber'],
-            image: value.data['image']);
-        if (_userData.name == "" || _userData.city == "")
-          return false;
-        else
-          return true;
-      } else
-        return false;
     });
   }
 
