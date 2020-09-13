@@ -241,7 +241,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       child: Row(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: 20, right: 20),
+            padding: EdgeInsets.only(left: 5, right: 20),
             child: Image.asset('assets/images/ProductEditPage/sneaker.png',
                 width: (size.width * 0.2)),
           ),
@@ -267,7 +267,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 child: Text("Розмір", style: defaultTextStyle),
                               ),
                               Container(
-                                width: size.width*0.14,
+                                width: 70,
                                 padding: EdgeInsets.all(0),
                                 child: FlatButton(
                                   onPressed: () {
@@ -282,7 +282,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         ),
                       ),
                       Container(
-                        width: size.width*0.13,
+                        width: 70,
                         child: FlatButton(
                           onPressed: () {
                             universalPicker(0, SizeTypeFull);
@@ -312,7 +312,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 10),
-                        width: size.width*0.13,
+                        width: 70,
                         child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -352,7 +352,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 10),
-                        width: size.width*0.13,
+                        width: 70,
                         child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -385,7 +385,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
   Widget gridImages() {
     try {
       return Container(
-        padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: appThemeAdditionalHexColor,
         ),

@@ -39,10 +39,10 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.fromLTRB(
-                        0, size.height * 0.15, 0, size.height * 0.05),
+                        0, size.height * 0.08, 0, size.height * 0.05),
                     child: Image.asset(
                         'assets/images/LoginPage/Shape-18-copy-30.png',
-                        height: size.height * 0.3),
+                        height: size.height * 0.4),
                   ),
                   Container(
                     width: size.width * 0.45,

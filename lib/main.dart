@@ -19,6 +19,7 @@ class Main extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.dark(),
           accentColor: appThemeBlueMainColor,
+          backgroundColor: appThemeBackgroundHexColor,
           textTheme: TextTheme(
             bodyText2: TextStyle(
               color: Colors.white,
