@@ -82,7 +82,7 @@ class _VerifyNumberState extends State<VerifyNumber> {
                               labelText: 'Код підтвердження',
                               labelStyle: TextStyle(color: Colors.white)),
                           validator: (String value) {
-                            return validateTextArea(codeTEC.text);
+                            return validateOTPCode(codeTEC.text);
                           },
                           keyboardType: TextInputType.number,
                         ))
@@ -131,7 +131,15 @@ class _VerifyNumberState extends State<VerifyNumber> {
   }
 
   loginWithOTP() {
-    authService.signInWithOTP(codeTEC.text, verificationID, scaffoldBuildContext);
+    if(_key.currentState.validate())
+      {
+        authService.signInWithOTP(codeTEC.text, verificationID, scaffoldBuildContext);
+      }
+    else{
+      setState(() {
+        _validate = true;
+      });
+    }
   }
 
   sendSMScode() //Send SMS code on press button verify
