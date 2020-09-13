@@ -16,6 +16,7 @@ import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
 import 'package:kapa_app/View/ProductEdit/roundedContainer.dart';
+import 'package:kapa_app/View/Widgets/AlertDialog.dart';
 import 'package:kapa_app/View/Widgets/SnackBar.dart';
 import 'package:kapa_app/View/Widgets/TextWithDot.dart';
 
@@ -74,64 +75,24 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   showDialog(
                       context: _context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: appThemeAdditionalHexColor,
-                          title: Container(
-                              padding: EdgeInsets.all(20),
-                              child: Text("Зберегти зміни?",
-                                  style: dialogTitleTextStyle,
-                                  textAlign: TextAlign.center)),
-                          content: Container(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: size.width * 0.2,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: FlatButton(
-                                    child: Text('Ні', style: defaultTextStyle),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    padding: EdgeInsets.all(8.0),
-                                    color: appThemeBlueMainColor,
-                                  ),
-                                ),
-                                Container(
-                                  width: size.width * 0.2,
-                                  child: FlatButton(
-                                    child: Text(
-                                      'Так',
-                                      style: defaultTextStyle,
-                                    ),
-                                    onPressed: () {
-                                      uploadAdd();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MainPage()));
-                                    },
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    padding: EdgeInsets.all(8.0),
-                                    color: appThemeBlueMainColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        return myAlertDialog(
+                          context: context,
+                          title: "Зберегти зміни?",
+                          onConfirm: (){
+                            uploadAdd();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MainPage()));
+                          },
+                          onCancel: (){
+                            Navigator.of(context).pop();
+                          },
+                          confirmButtonText: "Так",
+                          cancelButtonText: "Ні",
                         );
                       });
-                  setState(() {
-                    error = "";
-                  });
                 }
               },
               child: Text("Зберегти",
@@ -146,11 +107,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
     switch (sizeType) {
       case 0:
         {
-          return UKSizes;
+          return EUSizes;
+
         }
       case 1:
         {
-          return EUSizes;
+          return UKSizes;
         }
       case 2:
         {
@@ -247,6 +209,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         else
                           bootPrice = 0.0;
                       },
+                      enableInteractiveSelection: false,
                       keyboardType: TextInputType.number,
                       maxLength: 10,
                       style: defaultTextStyle,
@@ -304,6 +267,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 child: Text("Розмір", style: defaultTextStyle),
                               ),
                               Container(
+                                width: size.width*0.14,
                                 padding: EdgeInsets.all(0),
                                 child: FlatButton(
                                   onPressed: () {
@@ -318,7 +282,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         ),
                       ),
                       Container(
-                        width: 70,
+                        width: size.width*0.13,
                         child: FlatButton(
                           onPressed: () {
                             universalPicker(0, SizeTypeFull);
@@ -348,13 +312,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 10),
-                        width: 70,
+                        width: size.width*0.13,
                         child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             counterText: "",
                             hintText: bootHeight.toString(),
                           ),
+                          enableInteractiveSelection: false,
                           style: defaultTextStyle,
                           keyboardType: TextInputType.number,
                           maxLength: 3,
@@ -387,13 +352,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 10),
-                        width: 70,
+                        width: size.width*0.13,
                         child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             counterText: "",
                             hintText: bootWidth.toString(),
                           ),
+                          enableInteractiveSelection: false,
                           style: defaultTextStyle,
                           keyboardType: TextInputType.number,
                           maxLength: 3,
@@ -480,7 +446,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               });
             },
             child: Image.asset("assets/images/ProductEditPage/close.png",
-                width: 40),
+                width: size.width*0.08),
           )
         ],
       );
