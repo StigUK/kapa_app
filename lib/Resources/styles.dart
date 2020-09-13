@@ -7,6 +7,11 @@ const defaultTextStyle = TextStyle(
   fontSize: 18,
 );
 
+const middleTextStyle = TextStyle(
+  color: defaultTextColor,
+  fontSize: 14,
+);
+
 const defaultTextStyleBlack = TextStyle(
   color: Colors.black,
   fontSize: 18.0,
