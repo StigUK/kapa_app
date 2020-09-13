@@ -75,11 +75,11 @@ class _AccountInfoEditState extends State<AccountInfoEdit> {
                           alignment: Alignment.bottomRight,
                           children: [
                             !imageLoaded ? CircleAvatar(
-                              radius: 60,
+                              radius: size.width*0.14,
                               child: CircularProgressIndicator(),
                             )  :
                             CircleAvatar(
-                              radius: 60,
+                              radius: size.width*0.14,
                               backgroundImage: image !=null ? NetworkImage(image): AssetImage("assets/images/MainPage/anonymous-user.png"),
                             ),
                             CircleAvatar(
