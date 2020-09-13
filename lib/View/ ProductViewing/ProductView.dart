@@ -11,6 +11,7 @@ import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/MainPage.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
+import 'package:kapa_app/View/Widgets/AlertDialog.dart';
 import 'package:kapa_app/View/Widgets/FullScreenImagesView.dart';
 import 'package:kapa_app/View/Widgets/ImagesCarousel.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -227,45 +228,18 @@ class _ProductViewState extends State<ProductView> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context){
-                      return AlertDialog(
-                        backgroundColor: appThemeAdditionalHexColor,
-                        title: Container(padding: EdgeInsets.all(20),child: Text("Ви впевнені, що хочете видалити?", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
-                        content: Container(
-                          padding: EdgeInsets.only(top:20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: size.width*0.3,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50)
-                                ),
-                                child: FlatButton(
-                                  child: Text('Ні',style: defaultTextStyle,),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                  padding: EdgeInsets.all(8.0),
-                                  color: appThemeBlueMainColor,
-                                ),
-                              ),
-                              Container(
-                                width: size.width*0.3,
-                                child: FlatButton(
-                                  child: Text('Так',style: defaultTextStyle,),
-                                  onPressed: () {
-                                    fs.addAdToArchive(ad);
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                                  },
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                  padding: EdgeInsets.all(8.0),
-                                  color: appThemeBlueMainColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      return myAlertDialog(
+                        title: "Ви впевнені, що хочете видалити?",
+                        onCancel: (){
+                          Navigator.of(context).pop();
+                        },
+                        onConfirm: (){
+                          fs.addAdToArchive(ad);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+                        },
+                        cancelButtonText: "Ні",
+                        confirmButtonText: "Так",
+                        context: context,
                       );
                     }
                   );
