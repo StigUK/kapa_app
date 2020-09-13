@@ -6,6 +6,7 @@ import 'package:kapa_app/Resources/styles.dart';
 
 Widget adItem(Ad _ad, size)
 {
+  double defaultSize = size.width*0.35;
   return Stack(
     children: [
       Padding(
@@ -15,7 +16,7 @@ Widget adItem(Ad _ad, size)
           color: appThemeAdditionalHexColor,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        height: size.width*0.35,
+        height: defaultSize,
         width: size.width,
         child: Row(
           children: [
@@ -23,7 +24,21 @@ Widget adItem(Ad _ad, size)
             Container(
               child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(_ad.images.first, width: size.width*0.35, height: size.width*0.35, fit: BoxFit.cover,),
+              child: Image.network(_ad.images.first, width: defaultSize, height: defaultSize, fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent loadingProgress){
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      width: defaultSize,
+                      height: defaultSize,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null ?
+                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      ),
+                    );
+                  }),
               ),
             ),
             //Boot info
