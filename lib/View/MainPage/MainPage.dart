@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kapa_app/Models/UserData.dart';
 import 'package:kapa_app/Resources/colors.dart';
-import 'package:kapa_app/Resources/styles.dart';
 import 'package:kapa_app/Services/authservice.dart';
 import 'package:kapa_app/Services/firestoreService.dart';
 import 'package:kapa_app/View/MainPage/Pages/AccountInfo/AccountInfo.dart';
@@ -13,6 +12,7 @@ import 'package:kapa_app/View/MainPage/Pages/AllBootsList.dart';
 import 'package:kapa_app/View/MainPage/Pages/Favorites.dart';
 import 'package:kapa_app/View/UserDataInput/UserDataInput.dart';
 import 'package:kapa_app/View/VerifyPhoneNumber/VerifyNumber.dart';
+import 'package:kapa_app/View/Widgets/AlertDialog.dart';
 import 'package:kapa_app/View/Widgets/CustomAppBar.dart';
 import 'package:kapa_app/View/ProductEdit/ProductEditPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -59,17 +59,14 @@ class MainPageState extends State<MainPage> {
         print("onMessage: $message");
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
+          builder: (context) => myAlertDialog(
+            title: message['notification']['title'],
+            subtitle: message['notification']['body'],
+            onConfirm: (){
+              Navigator.of(context).pop();
+            },
+            confirmButtonText: "OK",
+            context: context,
           ),
         );
       },
@@ -141,56 +138,26 @@ class MainPageState extends State<MainPage> {
             child: GestureDetector(
               onTap: (){
                 if(phoneNumberVerify)
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
-                );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProductEditPage(ad: null)),
+                  );
                 else {
                   showDialog(
                       context: context,
-                      builder: (BuildContext context){
-                        return AlertDialog(
-                          backgroundColor: appThemeAdditionalHexColor,
-                          title: Container(padding: EdgeInsets.all(20),child: Text("Спочатку потрібно підтвердити номер телефону", style: dialogTitleTextStyle, textAlign: TextAlign.center)),
-                          content: Container(
-                            padding: EdgeInsets.only(top:20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: size.width*0.3,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50)
-                                  ),
-                                  child: FlatButton(
-                                    child: Text('Відміна',style: defaultTextStyle,),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                    padding: EdgeInsets.all(8.0),
-                                    color: appThemeBlueMainColor,
-                                  ),
-                                ),
-                                Container(
-                                  width: size.width*0.3,
-                                  child: FlatButton(
-                                    child: Text('Підтвердити',style: defaultTextStyle,),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      goToVerifyPhone();
-                                      checkUserDataExist();
-                                    },
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                    padding: EdgeInsets.all(8.0),
-                                    color: appThemeBlueMainColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
+                      builder: (BuildContext context) => myAlertDialog(
+                        context: context,
+                        onConfirm: (){
+                          goToVerifyPhone();
+                        },
+                        confirmButtonText: "Підтвердити",
+                        cancelButtonText: "Відміна",
+                        onCancel: (){
+                          Navigator.of(context).pop();
+                        },
+                        title: "Не можливо додати оголошення",
+                        subtitle: "Спочатку потрібно підтвердити номер телефону",
+                      )
                   );
                 }
               },
@@ -265,11 +232,14 @@ class MainPageState extends State<MainPage> {
     }
   }
 
-  goToVerifyPhone(){
-    Navigator.push(
+  goToVerifyPhone()
+  async{
+    await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => VerifyNumber(isLogin: false, number: userData.phoneNumber)),
     );
+    Navigator.of(context).pop();
+    checkUserDataExist();
   }
 }
